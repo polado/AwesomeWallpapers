@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        barColorWhenSelected="@color/colorNew"
+        icon="@drawable/ic_bottomnav_new"
+        id="@+id/tab_new"
+        inActiveColor="@color/colorNew"
+        title="New" />
+    <tab
+        barColorWhenSelected="@color/colorTrending"
+        icon="@drawable/ic_bottomnav_trending"
+        id="@+id/tab_trending"
+        inActiveColor="@color/colorTrending"
+        title="Trending" />
+    <tab
+        barColorWhenSelected="@color/colorCollection"
+        icon="@drawable/ic_bottomnav_collection"
+        id="@+id/tab_collection"
+        inActiveColor="#004c40"
+        title="Collection" />
+</tabs>

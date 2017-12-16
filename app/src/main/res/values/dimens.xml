@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="ic_xxs">12dp</dimen>
+    <dimen name="ic_xs">16dp</dimen>
+    <dimen name="ic_s">24dp</dimen>
+    <dimen name="ic_sm">28dp</dimen>
+    <dimen name="ic_m">32dp</dimen>
+    <dimen name="ic_ml">40dp</dimen>
+    <dimen name="ic_l">48dp</dimen>
+    <dimen name="ic_xl">56dp</dimen>
+    <dimen name="ic_xxl">64dp</dimen>
+    <dimen name="ic_xxxl">72dp</dimen>
+
+    <dimen name="bar_height">56dp</dimen>
+</resources>
