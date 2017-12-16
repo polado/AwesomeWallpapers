@@ -1,4 +1,4 @@
-package rest;
+package com.polado.wallpapers.rest;
 
 import com.kc.unsplash.api.HeaderInterceptor;
 

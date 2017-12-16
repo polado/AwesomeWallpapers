@@ -18,8 +18,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import Model.Photo;
-import rest.UnsplashApi;
+import com.polado.wallpapers.Model.Photo;
+import com.polado.wallpapers.rest.UnsplashApi;
 
 public class TrendingFragment extends Fragment implements AdapterView.OnItemClickListener {
     ImagesAdapter imagesAdapter;
@@ -73,7 +73,7 @@ public class TrendingFragment extends Fragment implements AdapterView.OnItemClic
             UnsplashApi unsplashApi = new UnsplashApi();
             unsplashApi.getCuratedPhotosList(1, 5, "latest", new UnsplashApi.OnPhotosLoadedListener() {
                 @Override
-                public void onLoaded(ArrayList<Model.Photo> photos) {
+                public void onLoaded(ArrayList<com.polado.wallpapers.Model.Photo> photos) {
                     progressBar.setVisibility(View.INVISIBLE);
                     errorMsgIV.setVisibility(View.INVISIBLE);
 

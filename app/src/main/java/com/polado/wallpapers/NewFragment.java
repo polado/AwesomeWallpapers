@@ -22,8 +22,8 @@ import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirec
 import java.util.ArrayList;
 import java.util.Objects;
 
-import Model.Photo;
-import rest.UnsplashApi;
+import com.polado.wallpapers.Model.Photo;
+import com.polado.wallpapers.rest.UnsplashApi;
 
 
 public class NewFragment extends Fragment implements AdapterView.OnItemClickListener {
@@ -91,7 +91,7 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
             UnsplashApi unsplashApi = new UnsplashApi();
             unsplashApi.getPhotosList(1, perPage, "latest", new UnsplashApi.OnPhotosLoadedListener() {
                 @Override
-                public void onLoaded(ArrayList<Model.Photo> photos) {
+                public void onLoaded(ArrayList<com.polado.wallpapers.Model.Photo> photos) {
                     progressBar.setVisibility(View.INVISIBLE);
                     errorMsgIV.setVisibility(View.INVISIBLE);
 
@@ -199,7 +199,7 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
         UnsplashApi unsplashApi = new UnsplashApi();
         unsplashApi.getPhotosList((numberOfPages + 1), perPage, "latest", new UnsplashApi.OnPhotosLoadedListener() {
             @Override
-            public void onLoaded(ArrayList<Model.Photo> photos) {
+            public void onLoaded(ArrayList<com.polado.wallpapers.Model.Photo> photos) {
                 swipyRefreshLayout.setRefreshing(false);
 
                 progressBar.setVisibility(View.INVISIBLE);

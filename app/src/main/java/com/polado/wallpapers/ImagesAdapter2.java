@@ -2,26 +2,19 @@ package com.polado.wallpapers;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.kc.unsplash.models.Photo;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
@@ -35,7 +28,7 @@ public class ImagesAdapter2 extends RecyclerView.Adapter<ImagesAdapter2.ViewHold
 
 //    ArrayList<String> strings;
 //    ArrayList<Drawable> images;
-    ArrayList<Model.Photo> photos;
+    ArrayList<com.polado.wallpapers.Model.Photo> photos;
 
     Boolean fav = false;
 
@@ -59,7 +52,7 @@ public class ImagesAdapter2 extends RecyclerView.Adapter<ImagesAdapter2.ViewHold
         }
     }
 
-    public ImagesAdapter2(Context context, ArrayList<Model.Photo> photos) {
+    public ImagesAdapter2(Context context, ArrayList<com.polado.wallpapers.Model.Photo> photos) {
         this.context = context;
 //        this.strings = strings;
 
@@ -87,7 +80,7 @@ public class ImagesAdapter2 extends RecyclerView.Adapter<ImagesAdapter2.ViewHold
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 //        Log.i("onBindViewHolder", strings.get(position));
 
-        final Model.Photo photo = photos.get(position);
+        final com.polado.wallpapers.Model.Photo photo = photos.get(position);
         holder.numOfFavs.setText(String.valueOf(photo.getLikes()));
         holder.creator.setText(photo.getUser().getName());
 

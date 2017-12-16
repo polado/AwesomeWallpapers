@@ -1,4 +1,4 @@
-package utils;
+package com.polado.wallpapers.utils;
 
 import android.content.ContentResolver;
 import android.graphics.Bitmap;
@@ -8,8 +8,6 @@ import android.util.Log;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
-
-import java.lang.ref.WeakReference;
 
 /**
  * Created by PolaDo on 11/27/2017.

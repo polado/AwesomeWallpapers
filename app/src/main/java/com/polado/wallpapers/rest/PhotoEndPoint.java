@@ -1,9 +1,9 @@
-package rest;
+package com.polado.wallpapers.rest;
 
 import java.util.ArrayList;
 
-import Model.Photo;
-import Model.PhotoStats;
+import com.polado.wallpapers.Model.Photo;
+import com.polado.wallpapers.Model.PhotoStats;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.POST;

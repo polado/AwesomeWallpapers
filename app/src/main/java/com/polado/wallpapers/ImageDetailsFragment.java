@@ -28,12 +28,12 @@ import com.squareup.picasso.Target;
 
 import java.lang.ref.WeakReference;
 
-import Model.Category;
-import Model.Photo;
-import Model.PhotoStats;
+import com.polado.wallpapers.Model.Category;
+import com.polado.wallpapers.Model.Photo;
+import com.polado.wallpapers.Model.PhotoStats;
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
-import rest.UnsplashApi;
-import utils.ImageTarget;
+import com.polado.wallpapers.rest.UnsplashApi;
+import com.polado.wallpapers.utils.ImageTarget;
 
 public class ImageDetailsFragment extends Fragment {
     int imageID;

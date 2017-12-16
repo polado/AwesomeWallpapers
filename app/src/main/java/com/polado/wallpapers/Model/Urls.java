@@ -1,4 +1,4 @@
-package Model;
+package com.polado.wallpapers.Model;
 
 import com.google.gson.annotations.SerializedName;
 

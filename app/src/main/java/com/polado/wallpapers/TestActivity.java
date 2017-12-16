@@ -8,10 +8,9 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-import Model.Photo;
-import rest.UnsplashApi;
+import com.polado.wallpapers.Model.Photo;
+import com.polado.wallpapers.rest.UnsplashApi;
 
-import com.omadahealth.*;
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 

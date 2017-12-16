@@ -1,4 +1,4 @@
-package Model;
+package com.polado.wallpapers.Model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -8,7 +8,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
-import utils.LruBitmapCache;
+import com.polado.wallpapers.utils.LruBitmapCache;
 
 /**
  * Created by PolaDo on 11/16/2017.
