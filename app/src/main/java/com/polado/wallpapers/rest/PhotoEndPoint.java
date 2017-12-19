@@ -2,6 +2,7 @@ package com.polado.wallpapers.rest;
 
 import java.util.ArrayList;
 
+import com.polado.wallpapers.Model.DownloadLink;
 import com.polado.wallpapers.Model.Photo;
 import com.polado.wallpapers.Model.PhotoStats;
 import retrofit2.Call;
@@ -36,6 +37,9 @@ public interface PhotoEndPoint {
 
     @GET("/photos/{id}/statistics")
     Call<PhotoStats> getPhotoStats(@Path("id") String id);
+
+    @GET("photos/{id}/download")
+    Call<DownloadLink> getPhotoDownloadLink(@Path("id") String id);
 
     @POST("/photos/{id}/like")
     Call<String> setLike(@Path("id") String id);

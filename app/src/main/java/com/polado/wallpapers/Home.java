@@ -1,9 +1,15 @@
 package com.polado.wallpapers;
 
+import android.Manifest;
 import android.animation.Animator;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -29,6 +35,7 @@ public class Home extends AppCompatActivity {
     private DrawerLayout drawer;
     private View navHeader;
 
+    Snackbar snackbar;
 
     private Fragment newFragment, trendingFragment;
 
@@ -75,28 +82,9 @@ public class Home extends AppCompatActivity {
                         break;
                 }
 
-//                if (getSupportFragmentManager().getBackStackEntryCount() < 1) {
-//                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
-//                            .setCustomAnimations(R.anim.slide_in_up, 0, 0, R.anim.slide_in_down);
-//                    transaction.replace(R.id.contentContainer, selectedFragment, tag);
-//                    transaction.commit();
-//                } else {
-//                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
-//                            .setCustomAnimations(R.anim.slide_in_up, 0, 0, R.anim.slide_in_down);
-//
-//                    transaction.replace(R.id.contentContainer, selectedFragment, tag);
-//                    transaction.commit();
-//
-//                    Fragment fragmentTrending = getSupportFragmentManager().findFragmentByTag("trending");
-//                    Fragment fragmentNew = getSupportFragmentManager().findFragmentByTag("new");
-//
-//                    if (fragmentNew != null && fragmentNew.isVisible()) {
-//                        transaction.hide(fragmentNew);
-//
-//                    } else if (fragmentTrending != null && fragmentTrending.isVisible()) {
-//
-//                    }
-//                }
+//                CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.home_coordinator_layout);
+                snackbar = Snackbar.make(findViewById(R.id.coordinator), "hiiiiii", Snackbar.LENGTH_SHORT);
+//                snackbar.show();
             }
         });
 

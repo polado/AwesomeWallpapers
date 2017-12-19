@@ -4,17 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/coordinator"
     tools:context="com.polado.wallpapers.Home">
+
+    <FrameLayout
+        android:id="@+id/contentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <include
         layout="@layout/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/bar_height" />
 
-    <FrameLayout
-        android:id="@+id/contentContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+
     <com.roughike.bottombar.BottomBar
         android:id="@+id/bottomBar"
         android:layout_width="match_parent"
@@ -23,5 +26,4 @@
         app:bb_inActiveTabAlpha="0.6"
         app:bb_showShadow="true"
         app:bb_tabXmlResource="@xml/bottombar_tabs" />
-
 </android.support.design.widget.CoordinatorLayout>

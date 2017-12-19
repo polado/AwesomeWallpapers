@@ -1,13 +1,19 @@
 package com.polado.wallpapers;
 
-import android.content.ContentResolver;
-import android.content.Context;
+import android.Manifest;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -22,24 +28,30 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
-import java.lang.ref.WeakReference;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
+
+import com.polado.wallpapers.Model.DownloadLink;
 import com.polado.wallpapers.Model.Category;
 import com.polado.wallpapers.Model.Photo;
 import com.polado.wallpapers.Model.PhotoStats;
+
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
+
 import com.polado.wallpapers.rest.UnsplashApi;
-import com.polado.wallpapers.utils.ImageTarget;
+import com.squareup.picasso.Target;
 
 public class ImageDetailsFragment extends Fragment {
     int imageID;
 
     boolean statsCheck = false, photoCheck = false;
-    String unknown = "Unknown";
+    String unknown = "Unknown", photoFile = null;
 
     Photo photo, photoData;
     PhotoStats photoStats;
@@ -54,6 +66,10 @@ public class ImageDetailsFragment extends Fragment {
             categories;
 
     ProgressBar progressBar;
+
+    ProgressDialog progressDialog;
+
+    Snackbar snackbar;
 
     View detailsLayout;
 
@@ -77,14 +93,21 @@ public class ImageDetailsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        final View view = inflater.inflate(R.layout.fragment_image_details, container, false);
+
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage("Downloading...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
+        snackbar = Snackbar.make(view, "Photo Downloaded", Snackbar.LENGTH_SHORT);
+
         Bundle bundle = getArguments();
         String transitionName = "";
         if (bundle != null) {
             transitionName = bundle.getString("TRANS_NAME");
             photo = bundle.getParcelable("IMAGE");
         }
-
-        final View view = inflater.inflate(R.layout.fragment_image_details, container, false);
 
         linearLayout = (LinearLayout) view.findViewById(R.id.image_details_ll);
 
@@ -113,6 +136,11 @@ public class ImageDetailsFragment extends Fragment {
             createdAt.setText(photo.getCreatedAt().split("T")[0]);
         else
             createdAt.setText(unknown);
+
+        photoFile = creator.getText().toString().trim()
+                + "-"
+                + createdAt.getText().toString().trim()
+                + ".jpg";
 
         views = (TextView) view.findViewById(R.id.details_views_tv);
         likes = (TextView) view.findViewById(R.id.details_favs_tv);
@@ -168,45 +196,102 @@ public class ImageDetailsFragment extends Fragment {
         downloadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("downlaod", "downloadBtn");
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-                final ImageTarget imageTarget = new ImageTarget(getContext().getContentResolver(),
-                        "Awesome Wallpapers", "awallpaper");
-
-                final Target mTarget = new Target() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
-                        Log.d("DEBUG", "onBitmapLoaded");
-                        if (getContext().getContentResolver() != null) {
-                            Log.i("DEBUG", "if");
-                            MediaStore.Images.Media.insertImage(getContext().getContentResolver(), bitmap, "awallpaper", "Awesome Wallpapers");
-                        } else {
-                            Log.i("DEBUG", "else");
-                        }
-                    }
-
-                    @Override
-                    public void onBitmapFailed(Drawable drawable) {
-                        Log.d("DEBUG", "onBitmapFailed");
-                    }
-
-                    @Override
-                    public void onPrepareLoad(Drawable drawable) {
-                        Log.d("DEBUG", "onPrepareLoad");
-                    }
-                };
-
-                Picasso.with(getContext()).load(photo.getUrls().getRaw())
-//                        .into(saveImage(getContext(), "Awesome Wallpapers", "awallpaper"));
-                        .into(mTarget);
-
-//                    }
-//                });
+                Log.i("downloadPhoto", "downloadBtn");
+                if (checkPhotoExist()) {
+                    Log.i("downloadPhoto", "if downloaded");
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setMessage("Photo Already Exists").setCancelable(true).show();
+                } else {
+                    Log.i("downloadPhoto", "else downloaded");
+                    if (checkStoragePermission())
+                        getDownloadLink();
+                    else
+                        Toast.makeText(getContext(), "need permission to write to storage", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         return view;
+    }
+
+    boolean checkPhotoExist() {
+
+        Log.i("downloadPhoto", "check");
+        File directory = new File(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/AwesomeWallpapers"));
+        if (directory.exists()) {
+            Log.i("downloadPhoto", "check1");
+            File myPhoto = new File(directory.getAbsolutePath() + "/" + photoFile);
+            if (myPhoto.exists()) {
+                Log.i("downloadPhoto", "check2");
+                return true;
+            }
+        }
+        return false;
+    }
+
+    Target target = new Target() {
+        @Override
+        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+            Log.d("downloadPhoto", " onBitmapLoaded");
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    final File directory = new File(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/AwesomeWallpapers")); // path to /data/data/yourapp/app_imageDir
+                    if (!directory.exists()) {
+                        directory.mkdir();
+                    }
+                    final File myImageFile = new File(directory, photoFile);
+
+                    FileOutputStream fos;
+                    try {
+                        fos = new FileOutputStream(myImageFile);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Log.i("downloadPhoto", "image saved to >>>" + myImageFile.getAbsolutePath());
+
+                    progressDialog.cancel();
+
+                    ((Home)getActivity()).snackbar.setText("Downloaded").show();
+//                    snackbar.setText("Downloaded").show();
+
+                }
+            }).start();
+        }
+
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
+            Log.d("downloadPhoto", " onBitmapFailed");
+            progressDialog.cancel();
+//            snackbar.setText("Download Failed").show();
+        }
+
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
+            Log.d("downloadPhoto", " onPrepareLoad");
+            progressDialog.show();
+        }
+    };
+
+    public boolean checkStoragePermission() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (getContext().checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                return true;
+            } else {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                return getContext().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        == PackageManager.PERMISSION_GRANTED;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     public void slideUp() {
@@ -356,6 +441,23 @@ public class ImageDetailsFragment extends Fragment {
         });
     }
 
+    public void getDownloadLink() {
+        Log.d("downloadLink", "getDownloadLink " + photo.getPhotoID());
+        new UnsplashApi().getPhotoDownloadLink(photo.getPhotoID(), new UnsplashApi.OnLinkLoadedListener() {
+
+            @Override
+            public void onLoaded(DownloadLink downloadLink) {
+                Picasso.with(getContext()).load(downloadLink.getUrl()).into(target);
+                Log.d("downloadLink", downloadLink.getUrl());
+            }
+
+            @Override
+            public void onFailure(String error) {
+                Log.d("downloadLink", error);
+            }
+        });
+    }
+
     private void setLike(String id) {
 
         Log.i("liked", "set Like");
@@ -372,70 +474,5 @@ public class ImageDetailsFragment extends Fragment {
         });
     }
 
-    private Target saveImage(final Context context, final String imageDir, final String imageName) {
-        Log.i("downlaod", "saveImage");
-//        ContextWrapper contextWrapper = new ContextWrapper(context);
-//        final File directory = contextWrapper.getDir(imageDir, Context.MODE_PRIVATE);
-
-        return new Target() {
-            private final WeakReference<ContentResolver> resolver = new WeakReference<>(context.getContentResolver());
-            ;
-
-            @Override
-            public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
-                Log.i("downlaod", "onBitmapLoaded");
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-
-                ContentResolver r = resolver.get();
-                if (r != null) {
-                    Log.i("downlaod", "if");
-                    MediaStore.Images.Media.insertImage(r, bitmap, imageName, imageDir);
-                } else {
-                    Log.i("downlaod", "else");
-                }
-
-//                        File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + imageName);
-//                        try {
-//                            file.createNewFile();
-//                            FileOutputStream ostream = new FileOutputStream(file);
-//                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
-//                            ostream.flush();
-//                            ostream.close();
-//                        } catch (IOException e) {
-//                            Log.e("IOException", e.getLocalizedMessage());
-//                        }
-
-//                        final File imageFile = new File(directory, imageName);
-//                        FileOutputStream fileOutputStream = null;
-//
-//                        try {
-//                            fileOutputStream = new FileOutputStream(imageFile);
-//                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
-//                        } catch (FileNotFoundException e) {
-//                            e.printStackTrace();
-//                        } finally {
-//                            try {
-//                                fileOutputStream.close();
-//                            } catch (IOException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    }
-//                }).start();
-            }
-
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-                Log.i("downlaod", "onBitmapFailed");
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-                Log.i("downlaod", "onPrepareLoad");
-            }
-        };
-    }
 
 }

@@ -156,12 +156,11 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
                 progressBar.setVisibility(View.INVISIBLE);
                 errorMsgIV.setVisibility(View.INVISIBLE);
 
-                if (Objects.equals(photosList.get(0).getPhotoID(), photos.get(0).getPhotoID())){
+                if (Objects.equals(photosList.get(0).getPhotoID(), photos.get(0).getPhotoID())) {
 
                     Log.i("refresh", "none");
                     return;
-                }
-                else if (photos.contains(photosList.get(0))) {
+                } else if (photos.contains(photosList.get(0))) {
                     int mutualIndex = photos.indexOf(photosList.get(0));
                     ArrayList<Photo> list = photosList;
                     photosList.clear();
@@ -210,6 +209,8 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
                 Log.d("loadmore", photos.size() + " " + photosList.size());
 
                 imagesAdapter.notifyDataSetChanged();
+
+                recyclerView.smoothScrollToPosition(numberOfPages * perPage);
 
                 numberOfPages++;
             }

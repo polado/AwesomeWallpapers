@@ -6,8 +6,10 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+import com.polado.wallpapers.Model.DownloadLink;
 import com.polado.wallpapers.Model.Photo;
 import com.polado.wallpapers.Model.PhotoStats;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -52,6 +54,11 @@ public class UnsplashApi {
     public void getPhotoStats(@NonNull String id, final OnPhotoStatsLoadedListener listener) {
         Call<PhotoStats> call = photoEndPoint.getPhotoStats(id);
         call.enqueue(getPhotoStatsCallback(listener));
+    }
+
+    public void getPhotoDownloadLink(@NonNull String id, final OnLinkLoadedListener listener) {
+        Call<DownloadLink> call = photoEndPoint.getPhotoDownloadLink(id);
+        call.enqueue(getPhotoDownloadLinkCallback(listener));
     }
 
     public void setLike(@NonNull String id, final OnPhotoLikedListener listener) {
@@ -120,6 +127,25 @@ public class UnsplashApi {
         };
     }
 
+    private Callback<DownloadLink> getPhotoDownloadLinkCallback(final OnLinkLoadedListener listener) {
+        return new Callback<DownloadLink>() {
+            @Override
+            public void onResponse(Call<DownloadLink> call, Response<DownloadLink> response) {
+                int statusCode = response.code();
+                if (statusCode == 200) {
+                    listener.onLoaded(response.body());
+                } else if (statusCode == 401) {
+                    listener.onFailure("Unauthorized, Check your client ID");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DownloadLink> call, Throwable t) {
+                listener.onFailure(t.getMessage());
+            }
+        };
+    }
+
     private Callback<String> setLikeCallback(final OnPhotoLikedListener listener) {
         return new Callback<String>() {
             @Override
@@ -155,6 +181,13 @@ public class UnsplashApi {
 
     public interface OnPhotoStatsLoadedListener {
         void onLoaded(PhotoStats stats);
+
+        void onFailure(String error);
+    }
+
+    public interface OnLinkLoadedListener {
+
+        void onLoaded(DownloadLink downloadLink);
 
         void onFailure(String error);
     }
