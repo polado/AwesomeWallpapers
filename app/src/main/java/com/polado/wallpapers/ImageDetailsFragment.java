@@ -30,22 +30,20 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.polado.wallpapers.Model.Category;
+import com.polado.wallpapers.Model.DownloadLink;
+import com.polado.wallpapers.Model.Photo;
+import com.polado.wallpapers.Model.PhotoStats;
+import com.polado.wallpapers.rest.UnsplashApi;
+import com.polado.wallpapers.utils.DownloadingNotification;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-
-import com.polado.wallpapers.Model.DownloadLink;
-import com.polado.wallpapers.Model.Category;
-import com.polado.wallpapers.Model.Photo;
-import com.polado.wallpapers.Model.PhotoStats;
-
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
-
-import com.polado.wallpapers.rest.UnsplashApi;
-import com.squareup.picasso.Target;
 
 public class ImageDetailsFragment extends Fragment {
     int imageID;
@@ -72,6 +70,8 @@ public class ImageDetailsFragment extends Fragment {
     Snackbar snackbar;
 
     View detailsLayout;
+
+    DownloadingNotification notification;
 
     public static ImageDetailsFragment newInstance() {
         return new ImageDetailsFragment();
@@ -196,6 +196,9 @@ public class ImageDetailsFragment extends Fragment {
         downloadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                imageID = photo.getLikes() * photo.getWidth() / photo.getHeight();
+                notification = new DownloadingNotification(getContext());
+
                 Log.i("downloadPhoto", "downloadBtn");
                 if (checkPhotoExist()) {
                     Log.i("downloadPhoto", "if downloaded");
@@ -252,8 +255,8 @@ public class ImageDetailsFragment extends Fragment {
                     Log.i("downloadPhoto", "image saved to >>>" + myImageFile.getAbsolutePath());
 
                     progressDialog.cancel();
-
-                    ((Home)getActivity()).snackbar.setText("Downloaded").show();
+                    notification.updateNotification(photoFile, imageID);
+                    ((Home) getActivity()).snackbar.setText("Downloaded").show();
 //                    snackbar.setText("Downloaded").show();
 
                 }
@@ -271,6 +274,7 @@ public class ImageDetailsFragment extends Fragment {
         public void onPrepareLoad(Drawable placeHolderDrawable) {
             Log.d("downloadPhoto", " onPrepareLoad");
             progressDialog.show();
+            notification.createNotification(photoFile, imageID);
         }
     };
 
@@ -315,17 +319,17 @@ public class ImageDetailsFragment extends Fragment {
 
         setExif(photoData);
 
-        String categoriesList = "No Categories";
+        StringBuilder categoriesList = new StringBuilder("No Categories");
         if (photoData.getCategories() != null && photoData.getCategories().size() > 1) {
-            categoriesList = "Categories: ";
+            categoriesList = new StringBuilder("Categories: ");
             Log.i("Categories", photoData.getCategories().size() + "");
             for (Category c : photoData.getCategories()) {
-                categoriesList += c.getTitle() + " ";
+                categoriesList.append(c.getTitle()).append(" ");
                 Log.i("Categories", c.getTitle());
 
             }
         }
-        categories.setText(categoriesList);
+        categories.setText(categoriesList.toString());
     }
 
     public void setExif(Photo photo) {
@@ -342,8 +346,10 @@ public class ImageDetailsFragment extends Fragment {
                 Log.i("camera", make + " " + model);
                 if (model.toLowerCase().contains(make.toLowerCase()))
                     camera.setText(String.valueOf(model));
-                else
-                    camera.setText(make + " " + model);
+                else {
+                    String cam = make + " " + model;
+                    camera.setText(cam);
+                }
             } else
                 camera.setText(unknown);
 
