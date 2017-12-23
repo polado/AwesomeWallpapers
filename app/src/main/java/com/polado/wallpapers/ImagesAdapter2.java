@@ -34,24 +34,6 @@ public class ImagesAdapter2 extends RecyclerView.Adapter<ImagesAdapter2.ViewHold
 
     private AdapterView.OnItemClickListener onItemClickListener;
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-
-        ImageView imageView;
-        ImageButton favBtn;
-        TextView numOfFavs;
-        TextView creator;
-        ImageView creatorProfileImage;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            imageView = (ImageView) itemView.findViewById(R.id.image_home_iv);
-            favBtn = (ImageButton) itemView.findViewById(R.id.fav_btn);
-            numOfFavs = (TextView) itemView.findViewById(R.id.image_number_of_favs);
-            creator = (TextView) itemView.findViewById(R.id.image_home_creator_tv);
-            creatorProfileImage = (ImageView) itemView.findViewById(R.id.image_home_creator_iv);
-        }
-    }
-
     public ImagesAdapter2(Context context, ArrayList<com.polado.wallpapers.Model.Photo> photos) {
         this.context = context;
 //        this.strings = strings;
@@ -71,7 +53,7 @@ public class ImagesAdapter2 extends RecyclerView.Adapter<ImagesAdapter2.ViewHold
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.image_view, parent, false);
+                .inflate(R.layout.photo_view, parent, false);
 
         return new ViewHolder(itemView);
     }
@@ -84,8 +66,8 @@ public class ImagesAdapter2 extends RecyclerView.Adapter<ImagesAdapter2.ViewHold
         holder.numOfFavs.setText(String.valueOf(photo.getLikes()));
         holder.creator.setText(photo.getUser().getName());
 
-//        holder.imageView.getLayoutParams().height = photo.getHeight();
-//        holder.imageView.getLayoutParams().width = photo.getWidth();
+//        holder.imageView.getLayoutParams().height = collection.getHeight();
+//        holder.imageView.getLayoutParams().width = collection.getWidth();
         GradientDrawable gradientDrawable = new GradientDrawable();
         gradientDrawable.setShape(GradientDrawable.RECTANGLE);
         gradientDrawable.setColor(Color.parseColor(photo.getColor()));
@@ -94,13 +76,13 @@ public class ImagesAdapter2 extends RecyclerView.Adapter<ImagesAdapter2.ViewHold
         Picasso.with(context).load(photo.getUser().getProfileImage().getMedium())
                 .transform(new CropCircleTransformation()).into(holder.creatorProfileImage);
 //
-//        fav = photo.getLikedByUser();
+//        like = collection.getLikedByUser();
 
 //        holder.imageView.setImageDrawable(images.get(position));
 
 //        holder.imageView.setTransitionName("trans_image" + position);
 //
-//        holder.favBtn.setOnClickListener(new View.OnClickListener() {
+//        holder.likeBtn.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
 //                final Animation scaleUp = AnimationUtils.loadAnimation(context, R.anim.scale_up);
@@ -116,13 +98,13 @@ public class ImagesAdapter2 extends RecyclerView.Adapter<ImagesAdapter2.ViewHold
 //
 //                    @Override
 //                    public void onAnimationEnd(Animation animation) {
-//                        if (fav)
-//                            holder.favBtn.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_border_white_24dp));
+//                        if (like)
+//                            holder.likeBtn.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_like_border_white_24dp));
 //                        else
-//                            holder.favBtn.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_red_24dp));
-//                        holder.favBtn.startAnimation(scaleUp);
-//                        fav = !fav;
-//                        photo.setLikedByUser(!photo.getLikedByUser());
+//                            holder.likeBtn.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_like_red_24dp));
+//                        holder.likeBtn.startAnimation(scaleUp);
+//                        like = !like;
+//                        collection.setLikedByUser(!collection.getLikedByUser());
 //                    }
 //
 //                    @Override
@@ -131,8 +113,8 @@ public class ImagesAdapter2 extends RecyclerView.Adapter<ImagesAdapter2.ViewHold
 //                    }
 //                });
 //
-//                holder.favBtn.startAnimation(scaleDown);
-//                Toast.makeText(context, "fav this " + position, Toast.LENGTH_SHORT).show();
+//                holder.likeBtn.startAnimation(scaleDown);
+//                Toast.makeText(context, "like this " + position, Toast.LENGTH_SHORT).show();
 //            }
 //        });
     }
@@ -140,5 +122,23 @@ public class ImagesAdapter2 extends RecyclerView.Adapter<ImagesAdapter2.ViewHold
     @Override
     public int getItemCount() {
         return photos .size();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+
+        ImageView imageView;
+        ImageButton favBtn;
+        TextView numOfFavs;
+        TextView creator;
+        ImageView creatorProfileImage;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            imageView = (ImageView) itemView.findViewById(R.id.image_home_iv);
+            favBtn = (ImageButton) itemView.findViewById(R.id.fav_btn);
+            numOfFavs = (TextView) itemView.findViewById(R.id.image_number_of_favs);
+            creator = (TextView) itemView.findViewById(R.id.image_home_creator_tv);
+            creatorProfileImage = (ImageView) itemView.findViewById(R.id.image_home_creator_iv);
+        }
     }
 }

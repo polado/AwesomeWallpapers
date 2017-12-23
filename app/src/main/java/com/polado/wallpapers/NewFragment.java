@@ -18,16 +18,15 @@ import android.widget.Toast;
 
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
+import com.polado.wallpapers.Model.Photo;
+import com.polado.wallpapers.rest.UnsplashApi;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-import com.polado.wallpapers.Model.Photo;
-import com.polado.wallpapers.rest.UnsplashApi;
-
 
 public class NewFragment extends Fragment implements AdapterView.OnItemClickListener {
-    ImagesAdapter imagesAdapter;
+    PhotosAdapter photosAdapter;
     RecyclerView recyclerView;
 
     ImageView errorMsgIV;
@@ -72,18 +71,16 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         boolean t;
-        if (photosList == null) t = false;
-        else t = true;
+        t = photosList != null;
         Log.i("new frag", "" + t);
         Log.i("NewFragment", "onCreateView");
         final View view = inflater.inflate(R.layout.fragment_new, container, false);
 
         final AdapterView.OnItemClickListener onItemClickListener = this;
 
+        errorMsgIV = (ImageView) view.findViewById(R.id.new_error_msg_iv);
 
-        errorMsgIV = (ImageView) view.findViewById(R.id.error_msg_iv);
-
-        progressBar = (ProgressBar) view.findViewById(R.id.item_one_pb);
+        progressBar = (ProgressBar) view.findViewById(R.id.new_pb);
 
         if (photosList == null) {
             progressBar.setVisibility(View.VISIBLE);
@@ -98,12 +95,12 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
                     photosList = photos;
 //                    adapterPhotosList = photos;
 
-                    imagesAdapter = new ImagesAdapter(getContext(), photosList, onItemClickListener);
-                    recyclerView = (RecyclerView) view.findViewById(R.id.images_rv);
+                    photosAdapter = new PhotosAdapter(getContext(), photosList, onItemClickListener);
+                    recyclerView = (RecyclerView) view.findViewById(R.id.new_images_rv);
 
                     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
                     recyclerView.setLayoutManager(mLayoutManager);
-                    recyclerView.setAdapter(imagesAdapter);
+                    recyclerView.setAdapter(photosAdapter);
 
                     numberOfPages++;
                 }
@@ -119,12 +116,13 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
         } else {
             progressBar.setVisibility(View.INVISIBLE);
             errorMsgIV.setVisibility(View.INVISIBLE);
-            imagesAdapter = new ImagesAdapter(getContext(), photosList, onItemClickListener);
-            recyclerView = (RecyclerView) view.findViewById(R.id.images_rv);
+
+            photosAdapter = new PhotosAdapter(getContext(), photosList, onItemClickListener);
+            recyclerView = (RecyclerView) view.findViewById(R.id.new_images_rv);
 
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
             recyclerView.setLayoutManager(mLayoutManager);
-            recyclerView.setAdapter(imagesAdapter);
+            recyclerView.setAdapter(photosAdapter);
         }
 
 
@@ -177,7 +175,7 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
                     Log.i("refresh", "new");
                 }
 
-                imagesAdapter.notifyDataSetChanged();
+                photosAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -208,7 +206,7 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
 
                 Log.d("loadmore", photos.size() + " " + photosList.size());
 
-                imagesAdapter.notifyDataSetChanged();
+                photosAdapter.notifyDataSetChanged();
 
                 recyclerView.smoothScrollToPosition(numberOfPages * perPage);
 
@@ -242,7 +240,7 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
     }
 
     public void makeTransition(ImageView view, int position) {
-        ImageDetailsFragment detailsFragment = new ImageDetailsFragment();
+        PhotoDetailsFragment detailsFragment = new PhotoDetailsFragment();
 
         setSharedElementReturnTransition(TransitionInflater.from(
                 getActivity()).inflateTransition(R.transition.change_image_trans));
@@ -268,7 +266,7 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
                 .addSharedElement(view, imageTransitionName)
                 .hide(this)
                 .addToBackStack("new")
-                .replace(R.id.contentContainer, detailsFragment, "ImageDetails")
+                .replace(R.id.contentContainer, detailsFragment, "PhotoDetails")
                 .commit();
     }
 }

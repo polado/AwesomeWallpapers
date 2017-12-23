@@ -47,7 +47,7 @@
                 android:layout_width="@dimen/ic_s"
                 android:layout_height="@dimen/ic_s"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_favorite_black_24dp" />
+                android:src="@drawable/ic_like_black_24dp" />
 
             <TextView
                 android:id="@+id/details_favs_tv"

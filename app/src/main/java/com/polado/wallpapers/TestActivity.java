@@ -6,13 +6,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-import java.util.ArrayList;
-
+import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout;
+import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 import com.polado.wallpapers.Model.Photo;
 import com.polado.wallpapers.rest.UnsplashApi;
 
-import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout;
-import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
+import java.util.ArrayList;
 
 public class TestActivity extends AppCompatActivity {
 
@@ -61,12 +60,12 @@ public class TestActivity extends AppCompatActivity {
 //            public void onResponse(Call<ArrayList<Photo>> call, Response<ArrayList<Photo>> response) {
 //                ArrayList<Photo> photosList = response.body();
 //
-//                imagesAdapter = new ImagesAdapter2(TestActivity.this, photosList);
+//                photosAdapter = new ImagesAdapter2(TestActivity.this, photosList);
 //                recyclerView = (RecyclerView) findViewById(R.id.test_images_rv);
 //
 //                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(TestActivity.this);
 //                recyclerView.setLayoutManager(mLayoutManager);
-//                recyclerView.setAdapter(imagesAdapter);
+//                recyclerView.setAdapter(photosAdapter);
 //            }
 //
 //            @Override

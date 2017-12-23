@@ -45,7 +45,7 @@ import java.io.IOException;
 
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
-public class ImageDetailsFragment extends Fragment {
+public class PhotoDetailsFragment extends Fragment {
     int imageID;
 
     boolean statsCheck = false, photoCheck = false;
@@ -72,9 +72,55 @@ public class ImageDetailsFragment extends Fragment {
     View detailsLayout;
 
     DownloadingNotification notification;
+    Target target = new Target() {
+        @Override
+        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+            Log.d("downloadPhoto", " onBitmapLoaded");
 
-    public static ImageDetailsFragment newInstance() {
-        return new ImageDetailsFragment();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    final File directory = new File(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/AwesomeWallpapers")); // path to /data/data/yourapp/app_imageDir
+                    if (!directory.exists()) {
+                        directory.mkdir();
+                    }
+                    final File myImageFile = new File(directory, photoFile);
+
+                    FileOutputStream fos;
+                    try {
+                        fos = new FileOutputStream(myImageFile);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Log.i("downloadPhoto", "image saved to >>>" + myImageFile.getAbsolutePath());
+
+                    progressDialog.cancel();
+                    notification.updateNotification(photoFile, imageID);
+                    ((Home) getActivity()).snackbar.setText("Downloaded").show();
+//                    snackbar.setText("Downloaded").show();
+
+                }
+            }).start();
+        }
+
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
+            Log.d("downloadPhoto", " onBitmapFailed");
+            progressDialog.cancel();
+//            snackbar.setText("Download Failed").show();
+        }
+
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
+            Log.d("downloadPhoto", " onPrepareLoad");
+            progressDialog.show();
+            notification.createNotification(photoFile, imageID);
+        }
+    };
+
+    public static PhotoDetailsFragment newInstance() {
+        return new PhotoDetailsFragment();
     }
 
     @Override
@@ -230,53 +276,6 @@ public class ImageDetailsFragment extends Fragment {
         }
         return false;
     }
-
-    Target target = new Target() {
-        @Override
-        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
-            Log.d("downloadPhoto", " onBitmapLoaded");
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    final File directory = new File(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/AwesomeWallpapers")); // path to /data/data/yourapp/app_imageDir
-                    if (!directory.exists()) {
-                        directory.mkdir();
-                    }
-                    final File myImageFile = new File(directory, photoFile);
-
-                    FileOutputStream fos;
-                    try {
-                        fos = new FileOutputStream(myImageFile);
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    Log.i("downloadPhoto", "image saved to >>>" + myImageFile.getAbsolutePath());
-
-                    progressDialog.cancel();
-                    notification.updateNotification(photoFile, imageID);
-                    ((Home) getActivity()).snackbar.setText("Downloaded").show();
-//                    snackbar.setText("Downloaded").show();
-
-                }
-            }).start();
-        }
-
-        @Override
-        public void onBitmapFailed(Drawable errorDrawable) {
-            Log.d("downloadPhoto", " onBitmapFailed");
-            progressDialog.cancel();
-//            snackbar.setText("Download Failed").show();
-        }
-
-        @Override
-        public void onPrepareLoad(Drawable placeHolderDrawable) {
-            Log.d("downloadPhoto", " onPrepareLoad");
-            progressDialog.show();
-            notification.createNotification(photoFile, imageID);
-        }
-    };
 
     public boolean checkStoragePermission() {
         if (Build.VERSION.SDK_INT >= 23) {

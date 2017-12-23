@@ -16,16 +16,16 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.Objects;
-
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 import com.polado.wallpapers.Model.Photo;
 import com.polado.wallpapers.rest.UnsplashApi;
 
+import java.util.ArrayList;
+import java.util.Objects;
+
 public class TrendingFragment extends Fragment implements AdapterView.OnItemClickListener {
-    ImagesAdapter imagesAdapter;
+    PhotosAdapter photosAdapter;
     RecyclerView recyclerView;
 
     ImageView errorMsgIV;
@@ -70,9 +70,9 @@ public class TrendingFragment extends Fragment implements AdapterView.OnItemClic
 
         final AdapterView.OnItemClickListener onItemClickListener = this;
 
-        errorMsgIV = (ImageView) view.findViewById(R.id.error_msg_iv);
+        errorMsgIV = (ImageView) view.findViewById(R.id.trending_error_msg_iv);
 
-        progressBar = (ProgressBar) view.findViewById(R.id.item_one_pb);
+        progressBar = (ProgressBar) view.findViewById(R.id.trending_pb);
 
         if (photosList == null) {
             progressBar.setVisibility(View.VISIBLE);
@@ -86,12 +86,12 @@ public class TrendingFragment extends Fragment implements AdapterView.OnItemClic
 
                     photosList = photos;
 
-                    imagesAdapter = new ImagesAdapter(getContext(), photosList, onItemClickListener);
-                    recyclerView = (RecyclerView) view.findViewById(R.id.images_rv);
+                    photosAdapter = new PhotosAdapter(getContext(), photosList, onItemClickListener);
+                    recyclerView = (RecyclerView) view.findViewById(R.id.trending_images_rv);
 
                     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
                     recyclerView.setLayoutManager(mLayoutManager);
-                    recyclerView.setAdapter(imagesAdapter);
+                    recyclerView.setAdapter(photosAdapter);
 
                     numberOfPages++;
                 }
@@ -107,15 +107,15 @@ public class TrendingFragment extends Fragment implements AdapterView.OnItemClic
         } else {
             progressBar.setVisibility(View.INVISIBLE);
             errorMsgIV.setVisibility(View.INVISIBLE);
-            imagesAdapter = new ImagesAdapter(getContext(), photosList, onItemClickListener);
-            recyclerView = (RecyclerView) view.findViewById(R.id.images_rv);
+            photosAdapter = new PhotosAdapter(getContext(), photosList, onItemClickListener);
+            recyclerView = (RecyclerView) view.findViewById(R.id.trending_images_rv);
 
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
             recyclerView.setLayoutManager(mLayoutManager);
-            recyclerView.setAdapter(imagesAdapter);
+            recyclerView.setAdapter(photosAdapter);
         }
 
-        swipyRefreshLayout = (SwipyRefreshLayout) view.findViewById(R.id.new_swipy_refresh);
+        swipyRefreshLayout = (SwipyRefreshLayout) view.findViewById(R.id.trending_swipy_refresh);
 
         swipyRefreshLayout.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
             @Override
@@ -164,7 +164,7 @@ public class TrendingFragment extends Fragment implements AdapterView.OnItemClic
                     Log.i("refresh", "new");
                 }
 
-                imagesAdapter.notifyDataSetChanged();
+                photosAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -195,7 +195,7 @@ public class TrendingFragment extends Fragment implements AdapterView.OnItemClic
 
                 Log.d("loadmore", photos.size() + " " + photosList.size());
 
-                imagesAdapter.notifyDataSetChanged();
+                photosAdapter.notifyDataSetChanged();
 
                 recyclerView.smoothScrollToPosition(numberOfPages * perPage);
 
@@ -230,7 +230,7 @@ public class TrendingFragment extends Fragment implements AdapterView.OnItemClic
     }
 
     public void makeTransation(ImageView view, int position) {
-        ImageDetailsFragment detailsFragment = new ImageDetailsFragment();
+        PhotoDetailsFragment detailsFragment = new PhotoDetailsFragment();
 
         setSharedElementReturnTransition(TransitionInflater.from(
                 getActivity()).inflateTransition(R.transition.change_image_trans));

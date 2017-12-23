@@ -8,15 +8,15 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/error_msg_iv"
+        android:id="@+id/new_error_msg_iv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:src="@drawable/basketball"
+        android:src="@drawable/error_iv"
         android:visibility="invisible" />
 
     <ProgressBar
-        android:id="@+id/item_one_pb"
+        android:id="@+id/new_pb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -30,7 +30,7 @@
         app:srl_direction="both">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/images_rv"
+            android:id="@+id/new_images_rv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"

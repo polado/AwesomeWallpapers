@@ -19,7 +19,7 @@ public interface CollectionEndPoint {
     Call<ArrayList<Collection>> getCollections(@Query("page") Integer page,
                                                @Query("per_page") Integer perPage);
 
-    @GET("collections/features")
+    @GET("collections/featured")
     Call<ArrayList<Collection>> getFeaturedCollections(@Query("page") Integer page,
                                                        @Query("per_page") Integer perPage);
 

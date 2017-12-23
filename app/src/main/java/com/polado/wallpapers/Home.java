@@ -1,15 +1,10 @@
 package com.polado.wallpapers;
 
-import android.Manifest;
 import android.animation.Animator;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -26,18 +21,14 @@ import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 
 public class Home extends AppCompatActivity {
+    Snackbar snackbar;
     private Toolbar toolbar;
-
     private CardView toolbarCV, searchBarCV;
     private ImageButton searchBtn;
-
     private NavigationView navigationView;
     private DrawerLayout drawer;
     private View navHeader;
-
-    Snackbar snackbar;
-
-    private Fragment newFragment, trendingFragment;
+    private Fragment newFragment, trendingFragment, collectionsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +38,7 @@ public class Home extends AppCompatActivity {
         if (savedInstanceState == null) {
             newFragment = NewFragment.newInstance();
             trendingFragment = TrendingFragment.newInstance();
+            collectionsFragment = CollectionsFragment.newInstance();
         }
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -78,12 +70,12 @@ public class Home extends AppCompatActivity {
                     case R.id.tab_collection:
 //                        selectedFragment = NewFragment.newInstance();
 //                        tag = "new";
-                        showNewFragment();
+                        showCollectionFragment();
                         break;
                 }
 
 //                CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.home_coordinator_layout);
-                snackbar = Snackbar.make(findViewById(R.id.coordinator), "hiiiiii", Snackbar.LENGTH_SHORT);
+                snackbar = Snackbar.make(findViewById(R.id.coordinator), "hi", Snackbar.LENGTH_SHORT);
 //                snackbar.show();
             }
         });
@@ -92,14 +84,20 @@ public class Home extends AppCompatActivity {
         fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
             public void onBackStackChanged() {
-                Fragment imageDetails = fragmentManager.findFragmentByTag("ImageDetails");
+                Fragment photoDetails = fragmentManager.findFragmentByTag("PhotoDetails");
 
-                if (imageDetails != null && imageDetails.isVisible()) {
-                    Log.i("HomeFragmentChange", "imageDetails");
+                Fragment collectionDetails = fragmentManager.findFragmentByTag("CollectionDetails");
+
+                if (photoDetails != null && photoDetails.isVisible()) {
+                    Log.i("HomeFragmentChange", "photoDetails");
+                    toolbar.setVisibility(View.INVISIBLE);
+                    bottomBar.setVisibility(View.INVISIBLE);
+                } else if (collectionDetails != null && collectionDetails.isVisible()) {
+                    Log.i("HomeFragmentChange", "collectionDetails");
                     toolbar.setVisibility(View.INVISIBLE);
                     bottomBar.setVisibility(View.INVISIBLE);
                 } else {
-                    Log.i("HomeFragmentChange", "not imageDetails");
+                    Log.i("HomeFragmentChange", "not photoDetails or collectionDetails");
                     toolbar.setVisibility(View.VISIBLE);
                     bottomBar.setVisibility(View.VISIBLE);
                 }
@@ -119,6 +117,9 @@ public class Home extends AppCompatActivity {
         if (trendingFragment.isAdded())
             transaction.hide(trendingFragment);
 
+        if (collectionsFragment.isAdded())
+            transaction.hide(collectionsFragment);
+
         transaction.commit();
     }
 
@@ -133,6 +134,27 @@ public class Home extends AppCompatActivity {
 
         if (newFragment.isAdded())
             transaction.hide(newFragment);
+
+        if (collectionsFragment.isAdded())
+            transaction.hide(collectionsFragment);
+
+        transaction.commit();
+    }
+
+    protected void showCollectionFragment() {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_up, 0, 0, R.anim.slide_in_down);
+
+        if (collectionsFragment.isAdded())
+            transaction.show(collectionsFragment);
+        else
+            transaction.add(R.id.contentContainer, collectionsFragment, "collection");
+
+        if (newFragment.isAdded())
+            transaction.hide(newFragment);
+
+        if (trendingFragment.isAdded())
+            transaction.hide(trendingFragment);
 
         transaction.commit();
     }

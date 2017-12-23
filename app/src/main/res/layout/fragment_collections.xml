@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/trending_error_msg_iv"
+        android:id="@+id/collections_error_msg_iv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -12,21 +12,21 @@
         android:visibility="invisible" />
 
     <ProgressBar
-        android:id="@+id/trending_pb"
+        android:id="@+id/collections_pb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:visibility="invisible" />
 
     <com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout
-        android:id="@+id/trending_swipy_refresh"
+        android:id="@+id/collections_swipy_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="56dp"
         app:srl_direction="both">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/trending_images_rv"
+            android:id="@+id/collections_images_rv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"

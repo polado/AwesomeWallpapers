@@ -1,6 +1,5 @@
 package com.polado.wallpapers;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -16,18 +15,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.polado.wallpapers.Model.Photo;
+import com.polado.wallpapers.utils.PhotoDimensions;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import com.polado.wallpapers.Model.Photo;
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
 /**
  * Created by PolaDo on 10/19/2017.
  */
 
-public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ViewHolder> {
+public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder> {
 
     Context context;
 
@@ -35,39 +35,11 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ViewHolder
 //    ArrayList<Drawable> images;
     ArrayList<Photo> photos;
 
-    Boolean fav = false;
+    Boolean like = false;
 
     private AdapterView.OnItemClickListener onItemClickListener;
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        ImageView imageView;
-        ImageButton favBtn;
-        TextView numOfFavs;
-        TextView creator;
-        ImageView creatorProfileImage;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            imageView = (ImageView) itemView.findViewById(R.id.image_home_iv);
-            favBtn = (ImageButton) itemView.findViewById(R.id.fav_btn);
-            numOfFavs = (TextView) itemView.findViewById(R.id.image_number_of_favs);
-            creator = (TextView) itemView.findViewById(R.id.image_home_creator_tv);
-            creatorProfileImage = (ImageView) itemView.findViewById(R.id.image_home_creator_iv);
-
-            imageView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View view) {
-//            Toast.makeText(context, view.getId()+" Item click nr: "+getLayoutPosition(), Toast.LENGTH_SHORT).show();
-
-            //passing the clicked position to the parent class
-            onItemClickListener.onItemClick(null, view, getLayoutPosition(), view.getId());
-        }
-    }
-
-    public ImagesAdapter(Context context, ArrayList<Photo> photos, AdapterView.OnItemClickListener onItemClickListener) {
+    public PhotosAdapter(Context context, ArrayList<Photo> photos, AdapterView.OnItemClickListener onItemClickListener) {
         this.context = context;
 //        this.strings = strings;
 
@@ -86,7 +58,7 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ViewHolder
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.image_view, parent, false);
+                .inflate(R.layout.photo_view, parent, false);
 
         return new ViewHolder(itemView);
     }
@@ -95,23 +67,16 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ViewHolder
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
         final Photo photo = photos.get(position);
-//        if (photo.getExif() == null)
+//        if (collection.getExif() == null)
 //            Log.i("onBindViewHolder", "null");
 //        else
 //            Log.i("onBindViewHolder", "not null");
 
 
-        holder.numOfFavs.setText(String.valueOf(photo.getLikes()));
+        holder.numOfLikes.setText(String.valueOf(photo.getLikes()));
         holder.creator.setText(photo.getUser().getName());
 
-        int screenWidth = ((Activity) context).getWindowManager().getDefaultDisplay().getWidth(),
-                screenHeight = ((Activity) context).getWindowManager().getDefaultDisplay().getHeight();
-
-        int imageHeight = screenWidth * photo.getHeight() / photo.getWidth();
-
-//        Log.i("width", screenWidth + " " + screenHeight + " " + imageHeight);
-
-        holder.imageView.getLayoutParams().height = imageHeight;
+        holder.imageView.getLayoutParams().height = new PhotoDimensions(context, photo).getHeight();
 
         GradientDrawable gradientDrawable = new GradientDrawable();
         gradientDrawable.setShape(GradientDrawable.RECTANGLE);
@@ -123,7 +88,7 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ViewHolder
 
         holder.imageView.setTransitionName("trans_image" + position);
 
-        holder.favBtn.setOnClickListener(new View.OnClickListener() {
+        holder.likeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final Animation scaleUp = AnimationUtils.loadAnimation(context, R.anim.scale_up);
@@ -139,13 +104,13 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ViewHolder
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        if (fav)
-                            holder.favBtn.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_border_white_24dp));
+                        if (like)
+                            holder.likeBtn.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_like_border_white_24dp));
                         else
-                            holder.favBtn.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_red_24dp));
-                        holder.favBtn.startAnimation(scaleUp);
-                        fav = !fav;
-//                        photo.setLikedByUser(!photo.getLikedByUser());
+                            holder.likeBtn.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_like_red_24dp));
+                        holder.likeBtn.startAnimation(scaleUp);
+                        like = !like;
+//                        collection.setLikedByUser(!collection.getLikedByUser());
                     }
 
                     @Override
@@ -154,8 +119,8 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ViewHolder
                     }
                 });
 
-                holder.favBtn.startAnimation(scaleDown);
-                Toast.makeText(context, "fav this " + position, Toast.LENGTH_SHORT).show();
+                holder.likeBtn.startAnimation(scaleDown);
+                Toast.makeText(context, "like this " + position, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -163,5 +128,31 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ViewHolder
     @Override
     public int getItemCount() {
         return photos.size();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        ImageView imageView, creatorProfileImage;
+        ImageButton likeBtn;
+        TextView numOfLikes, creator;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            imageView = (ImageView) itemView.findViewById(R.id.image_home_iv);
+            likeBtn = (ImageButton) itemView.findViewById(R.id.fav_btn);
+            numOfLikes = (TextView) itemView.findViewById(R.id.image_number_of_favs);
+            creator = (TextView) itemView.findViewById(R.id.image_home_creator_tv);
+            creatorProfileImage = (ImageView) itemView.findViewById(R.id.image_home_creator_iv);
+
+            imageView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+//            Toast.makeText(context, view.getId()+" Item click nr: "+getLayoutPosition(), Toast.LENGTH_SHORT).show();
+
+            //passing the clicked position to the parent class
+            onItemClickListener.onItemClick(null, view, getLayoutPosition(), view.getId());
+        }
     }
 }

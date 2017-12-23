@@ -4,11 +4,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import java.util.ArrayList;
-
+import com.polado.wallpapers.Model.Collection;
 import com.polado.wallpapers.Model.DownloadLink;
 import com.polado.wallpapers.Model.Photo;
 import com.polado.wallpapers.Model.PhotoStats;
+
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,10 +22,16 @@ import retrofit2.Response;
 public class UnsplashApi {
 
     private PhotoEndPoint photoEndPoint;
+    private CollectionEndPoint collectionEndPoint;
 
     public UnsplashApi() {
         photoEndPoint = ApiClient.getClient().create(PhotoEndPoint.class);
+        collectionEndPoint = ApiClient.getClient().create(CollectionEndPoint.class);
     }
+
+    /**
+     * photos api
+     */
 
     public void getPhotosList(Integer page, Integer perPage, String order, final OnPhotosLoadedListener listener) {
         Call<ArrayList<Photo>> call = photoEndPoint.getPhotosList(page, perPage, order);
@@ -167,6 +174,85 @@ public class UnsplashApi {
         };
     }
 
+    /**
+     * collection api
+     */
+
+    public void getCollections(Integer page, Integer perPage, final OnCollectionsLoadedListener listener) {
+        Call<ArrayList<Collection>> call = collectionEndPoint.getCollections(page, perPage);
+        call.enqueue(getCollectionsCallback(listener));
+    }
+
+    public void getFeaturedCollections(Integer page, Integer perPage, final OnCollectionsLoadedListener listener) {
+        Call<ArrayList<Collection>> call = collectionEndPoint.getFeaturedCollections(page, perPage);
+        call.enqueue(getCollectionsCallback(listener));
+    }
+
+    public void getCuratedCollections(Integer page, Integer perPage, final OnCollectionsLoadedListener listener) {
+        Call<ArrayList<Collection>> call = collectionEndPoint.getCuratedCollections(page, perPage);
+        call.enqueue(getCollectionsCallback(listener));
+    }
+
+    public void getCollection(String id, final OnCollectionLoadedListener listener) {
+        Call<Collection> call = collectionEndPoint.getCollection(id);
+        call.enqueue(getCollectionCallback(listener));
+    }
+
+    public void getCuratedCollection(String id, final OnCollectionLoadedListener listener) {
+        Call<Collection> call = collectionEndPoint.getCuratedCollection(id);
+        call.enqueue(getCollectionCallback(listener));
+    }
+
+    public void getCollectionPhotos(String id, Integer page, Integer perPage, final OnPhotosLoadedListener listener) {
+        Call<ArrayList<Photo>> call = collectionEndPoint.getCollectionPhotos(id, page, perPage);
+        call.enqueue(getPhotosCallback(listener));
+    }
+
+    public void getCuratedCollectionPhotos(String id, Integer page, Integer perPage, final OnPhotosLoadedListener listener) {
+        Call<ArrayList<Photo>> call = collectionEndPoint.getCuratedCollectionPhotos(id, page, perPage);
+        call.enqueue(getPhotosCallback(listener));
+    }
+
+    private Callback<ArrayList<Collection>> getCollectionsCallback(final OnCollectionsLoadedListener listener) {
+        return new Callback<ArrayList<Collection>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Collection>> call, Response<ArrayList<Collection>> response) {
+                int statusCode = response.code();
+                if (statusCode == 200) {
+                    ArrayList<Collection> collections = response.body();
+                    listener.onLoaded(collections);
+                } else if (statusCode == 401) {
+                    listener.onFailure("Unauthorized, Check your client ID");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Collection>> call, Throwable t) {
+                listener.onFailure(t.getMessage());
+            }
+        };
+    }
+
+    private Callback<Collection> getCollectionCallback(final OnCollectionLoadedListener listener) {
+        return new Callback<Collection>() {
+            @Override
+            public void onResponse(Call<Collection> call, Response<Collection> response) {
+                int statusCode = response.code();
+                if (statusCode == 200) {
+                    Collection collection = response.body();
+                    listener.onLoaded(collection);
+                } else if (statusCode == 401) {
+                    listener.onFailure("Unauthorized, Check your client ID");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Collection> call, Throwable t) {
+                listener.onFailure(t.getMessage());
+            }
+        };
+    }
+
     public interface OnPhotoLoadedListener {
         void onLoaded(Photo photo);
 
@@ -194,6 +280,18 @@ public class UnsplashApi {
 
     public interface OnPhotoLikedListener {
         void onLiked(String msg);
+
+        void onFailure(String error);
+    }
+
+    public interface OnCollectionsLoadedListener {
+        void onLoaded(ArrayList<Collection> collections);
+
+        void onFailure(String error);
+    }
+
+    public interface OnCollectionLoadedListener {
+        void onLoaded(Collection collection);
 
         void onFailure(String error);
     }

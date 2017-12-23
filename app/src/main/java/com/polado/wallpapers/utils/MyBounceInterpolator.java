@@ -1,4 +1,4 @@
-package com.polado.wallpapers;
+package com.polado.wallpapers.utils;
 
 /**
  * Created by PolaDo on 10/24/2017.

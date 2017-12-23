@@ -11,9 +11,36 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class Collection implements Parcelable {
+    public final static Creator<Collection> CREATOR = new Creator<Collection>() {
+
+
+        @SuppressWarnings({
+                "unchecked"
+        })
+        public Collection createFromParcel(Parcel in) {
+            Collection instance = new Collection();
+            instance.id = ((String) in.readValue((Integer.class.getClassLoader())));
+            instance.title = ((String) in.readValue((String.class.getClassLoader())));
+            instance.description = ((String) in.readValue((String.class.getClassLoader())));
+            instance.publishedAt = ((String) in.readValue((String.class.getClassLoader())));
+            instance.updatedAt = ((String) in.readValue((String.class.getClassLoader())));
+            instance.curated = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
+            instance.totalPhotos = ((Integer) in.readValue((Integer.class.getClassLoader())));
+            instance._private = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
+            instance.shareKey = ((String) in.readValue((String.class.getClassLoader())));
+            instance.coverPhoto = ((Photo) in.readValue((Photo.class.getClassLoader())));
+            instance.user = ((User) in.readValue((User.class.getClassLoader())));
+            instance.links = ((Links) in.readValue((Links.class.getClassLoader())));
+            return instance;
+        }
+
+        public Collection[] newArray(int size) {
+            return (new Collection[size]);
+        }
+    };
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private String id;
     @SerializedName("title")
     @Expose
     private String title;
@@ -48,39 +75,11 @@ public class Collection implements Parcelable {
     @Expose
     private Links links;
 
-    public final static Creator<Collection> CREATOR = new Creator<Collection>() {
-
-
-        @SuppressWarnings({
-                "unchecked"
-        })
-        public Collection createFromParcel(Parcel in) {
-            Collection instance = new Collection();
-            instance.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
-            instance.title = ((String) in.readValue((String.class.getClassLoader())));
-            instance.description = ((String) in.readValue((String.class.getClassLoader())));
-            instance.publishedAt = ((String) in.readValue((String.class.getClassLoader())));
-            instance.updatedAt = ((String) in.readValue((String.class.getClassLoader())));
-            instance.curated = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
-            instance.totalPhotos = ((Integer) in.readValue((Integer.class.getClassLoader())));
-            instance._private = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
-            instance.shareKey = ((String) in.readValue((String.class.getClassLoader())));
-            instance.coverPhoto = ((Photo) in.readValue((Photo.class.getClassLoader())));
-            instance.user = ((User) in.readValue((User.class.getClassLoader())));
-            instance.links = ((Links) in.readValue((Links.class.getClassLoader())));
-            return instance;
-        }
-
-        public Collection[] newArray(int size) {
-            return (new Collection[size]);
-        }
-    };
-
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
