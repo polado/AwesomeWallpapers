@@ -3,8 +3,10 @@ package com.polado.wallpapers;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +39,8 @@ public class CollectionDetailsFragment extends Fragment implements AdapterView.O
     ProgressBar progressBar;
 
     TextView title, creator;
+
+    ArrayList<Photo> photosList;
 
     RecyclerView recyclerView;
 
@@ -114,6 +118,8 @@ public class CollectionDetailsFragment extends Fragment implements AdapterView.O
                 progressBar.setVisibility(View.INVISIBLE);
                 errorMsg.setVisibility(View.INVISIBLE);
 
+                photosList = photos;
+
                 photosAdapter = new PhotosAdapter(getContext(), photos, onItemClickListener);
 
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
@@ -135,8 +141,46 @@ public class CollectionDetailsFragment extends Fragment implements AdapterView.O
     }
 
     @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        switch (view.getId()) {
+            case R.id.image_home_iv:
+                makeTransition((ImageView) view, position);
+                Toast.makeText(getContext(), " image " + position, Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                Toast.makeText(getContext(), " itemView " + position, Toast.LENGTH_SHORT).show();
+        }
+    }
 
+    public void makeTransition(ImageView view, int position) {
+        PhotoDetailsFragment detailsFragment = new PhotoDetailsFragment();
+
+        setSharedElementReturnTransition(TransitionInflater.from(
+                getActivity()).inflateTransition(R.transition.change_image_trans));
+        setExitTransition(TransitionInflater.from(
+                getActivity()).inflateTransition(android.R.transition.fade));
+
+        detailsFragment.setSharedElementEnterTransition(TransitionInflater.from(
+                getActivity()).inflateTransition(R.transition.change_image_trans));
+        detailsFragment.setEnterTransition(TransitionInflater.from(
+                getActivity()).inflateTransition(android.R.transition.fade));
+
+        String imageTransitionName = view.getTransitionName();
+
+        Bundle bundle = new Bundle();
+        bundle.putString("TRANS_NAME", imageTransitionName);
+        bundle.putParcelable("IMAGE", photosList.get(position));
+
+        detailsFragment.setArguments(bundle);
+
+        FragmentManager fragmentManager = getFragmentManager();
+
+        fragmentManager.beginTransaction()
+                .addSharedElement(view, imageTransitionName)
+                .hide(this)
+                .addToBackStack("CollectionDetails")
+                .replace(R.id.contentContainer, detailsFragment, "PhotoDetails")
+                .commit();
     }
 
     public void slideUp() {

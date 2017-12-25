@@ -94,7 +94,7 @@ public class CollectionsAdapter extends RecyclerView.Adapter<CollectionsAdapter.
 
         @Override
         public void onClick(View view) {
-            onItemClickListener.onItemClick(null, creatorProfileImage, getLayoutPosition(), view.getId());
+            onItemClickListener.onItemClick(null, creatorProfileImage, getLayoutPosition(), creatorProfileImage.getId());
         }
     }
 }

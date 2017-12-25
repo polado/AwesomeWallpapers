@@ -23,7 +23,7 @@
                 android:layout_gravity="center"
                 android:layout_margin="5dp"
                 android:src="@mipmap/ic_launcher"
-                android:transitionName="@string/fragment_image_trans" />
+                android:transitionName="@string/fragment_collection_trans" />
 
             <android.support.v4.widget.Space
                 android:layout_width="5dp"

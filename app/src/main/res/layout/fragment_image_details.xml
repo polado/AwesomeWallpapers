@@ -22,7 +22,7 @@
                 android:contentDescription="The image"
                 android:scaleType="centerCrop"
                 android:src="@drawable/i02"
-                android:transitionName="@string/fragment_image_trans" />
+                android:transitionName="@string/fragment_photo_trans" />
 
             <View
                 android:layout_width="match_parent"

@@ -478,6 +478,4 @@ public class PhotoDetailsFragment extends Fragment {
             }
         });
     }
-
-
 }

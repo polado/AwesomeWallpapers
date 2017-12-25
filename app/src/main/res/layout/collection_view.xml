@@ -71,7 +71,7 @@
                     android:layout_gravity="center|start"
                     android:layout_margin="5dp"
                     android:src="@mipmap/ic_launcher"
-                    android:transitionName="@string/fragment_image_trans" />
+                    android:transitionName="@string/fragment_collection_trans" />
 
                 <LinearLayout
                     android:layout_width="match_parent"

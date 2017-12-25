@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -166,15 +165,15 @@ public class CollectionsFragment extends Fragment implements AdapterView.OnItemC
     public void makeTransition(ImageView view, int position) {
         CollectionDetailsFragment detailsFragment = new CollectionDetailsFragment();
 
-        setSharedElementReturnTransition(TransitionInflater.from(
-                getActivity()).inflateTransition(R.transition.change_image_trans));
-        setExitTransition(TransitionInflater.from(
-                getActivity()).inflateTransition(android.R.transition.fade));
-
-        detailsFragment.setSharedElementEnterTransition(TransitionInflater.from(
-                getActivity()).inflateTransition(R.transition.change_image_trans));
-        detailsFragment.setEnterTransition(TransitionInflater.from(
-                getActivity()).inflateTransition(android.R.transition.fade));
+//        setSharedElementReturnTransition(TransitionInflater.from(
+//                getActivity()).inflateTransition(R.transition.change_image_trans));
+//        setExitTransition(TransitionInflater.from(
+//                getActivity()).inflateTransition(android.R.transition.fade));
+//
+//        detailsFragment.setSharedElementEnterTransition(TransitionInflater.from(
+//                getActivity()).inflateTransition(R.transition.change_image_trans));
+//        detailsFragment.setEnterTransition(TransitionInflater.from(
+//                getActivity()).inflateTransition(android.R.transition.fade));
 
         String imageTransitionName = view.getTransitionName();
 
@@ -187,7 +186,7 @@ public class CollectionsFragment extends Fragment implements AdapterView.OnItemC
         FragmentManager fragmentManager = getFragmentManager();
 
         fragmentManager.beginTransaction()
-                .addSharedElement(view, imageTransitionName)
+//                .addSharedElement(view, imageTransitionName)
                 .hide(this)
                 .addToBackStack("collection")
                 .replace(R.id.contentContainer, detailsFragment, "CollectionDetails")
