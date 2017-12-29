@@ -3,6 +3,7 @@ package com.polado.wallpapers;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -35,6 +36,7 @@ import com.polado.wallpapers.Model.DownloadLink;
 import com.polado.wallpapers.Model.Photo;
 import com.polado.wallpapers.Model.PhotoStats;
 import com.polado.wallpapers.rest.UnsplashApi;
+import com.polado.wallpapers.utils.DownloadPhotoService;
 import com.polado.wallpapers.utils.DownloadingNotification;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -72,6 +74,7 @@ public class PhotoDetailsFragment extends Fragment {
     View detailsLayout;
 
     DownloadingNotification notification;
+
     Target target = new Target() {
         @Override
         public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -96,7 +99,9 @@ public class PhotoDetailsFragment extends Fragment {
                     Log.i("downloadPhoto", "image saved to >>>" + myImageFile.getAbsolutePath());
 
                     progressDialog.cancel();
-                    notification.updateNotification(photoFile, imageID);
+
+                    startService(photoFile, imageID, false);
+//                    notification.updateNotification(photoFile, imageID);
                     ((Home) getActivity()).snackbar.setText("Downloaded").show();
 //                    snackbar.setText("Downloaded").show();
 
@@ -115,12 +120,23 @@ public class PhotoDetailsFragment extends Fragment {
         public void onPrepareLoad(Drawable placeHolderDrawable) {
             Log.d("downloadPhoto", " onPrepareLoad");
             progressDialog.show();
-            notification.createNotification(photoFile, imageID);
+
+            startService(photoFile, imageID, true);
+//            notification.createNotification(photoFile, imageID);
         }
     };
 
     public static PhotoDetailsFragment newInstance() {
         return new PhotoDetailsFragment();
+    }
+
+    private void startService(String msg, int id, boolean action) {
+        Intent intent = new Intent(getContext(), DownloadPhotoService.class);
+        intent.putExtra("MSG", msg);
+        intent.putExtra("ID", id);
+        intent.putExtra("ACTION", action);
+
+        getContext().startService(intent);
     }
 
     @Override
@@ -183,8 +199,8 @@ public class PhotoDetailsFragment extends Fragment {
         else
             createdAt.setText(unknown);
 
-        photoFile = creator.getText().toString().trim()
-                + "-"
+        photoFile = creator.getText().toString().replace(" ", "_").trim()
+                + "_"
                 + createdAt.getText().toString().trim()
                 + ".jpg";
 
@@ -453,6 +469,7 @@ public class PhotoDetailsFragment extends Fragment {
             @Override
             public void onLoaded(DownloadLink downloadLink) {
                 Picasso.with(getContext()).load(downloadLink.getUrl()).into(target);
+//                Picasso.with(getContext()).load(photo.getUrls().getRaw()).into(target);
                 Log.d("downloadLink", downloadLink.getUrl());
             }
 
