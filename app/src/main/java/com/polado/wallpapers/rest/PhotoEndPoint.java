@@ -1,10 +1,11 @@
 package com.polado.wallpapers.rest;
 
-import java.util.ArrayList;
-
 import com.polado.wallpapers.Model.DownloadLink;
 import com.polado.wallpapers.Model.Photo;
 import com.polado.wallpapers.Model.PhotoStats;
+
+import java.util.ArrayList;
+
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -23,8 +24,8 @@ public interface PhotoEndPoint {
 
     @GET("/photos/curated")
     Call<ArrayList<Photo>> getCuratedPhotosList(@Query("page") Integer page,
-                                         @Query("per_page") Integer perPage,
-                                         @Query("order_by") String orderBy);
+                                                @Query("per_page") Integer perPage,
+                                                @Query("order_by") String orderBy);
 
     @GET("/photos/{id}")
     Call<Photo> getPhotoByID(@Path("id") String id, @Query("w") Integer width, @Query("h") Integer height);

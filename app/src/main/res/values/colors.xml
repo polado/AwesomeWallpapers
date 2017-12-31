@@ -2,17 +2,33 @@
 <resources>
     <color name="transparent">#00FFFFFF</color>
 
-    <color name="colorWhite">#fafafa</color>
-    <color name="colorPrimaryDark">#66000000</color>
+    <color name="colorPrimary">#fafafa</color>
+    <color name="colorDark">#424242</color>
+    <color name="colorPrimaryDark">#d0d0d0</color>
+    <color name="colorChip">#66000000</color>
 
     <color name="colorPrimaryDark1">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-
+    <color name="colorAccent">#424242</color>
 
     <color name="colorNew">#c2185b</color>
-    <color name="colorTrending">#0288d1</color>
+    <color name="colorTrending">#f57c00</color>
     <color name="colorCollection">#00796b</color>
 
+    <color name="colorNewLight">#fa5788</color>
+    <color name="colorTrendingLight">#ffad42</color>
+    <color name="colorCollectionLight">#48a999</color>
+
+    <!--Old Stuff-->
+    <!--<color name="colorNew">#c2185b</color>-->
+    <!--<color name="colorTrending">#0288d1</color>-->
+    <!--<color name="colorCollection">#00796b</color>-->
+
+    <!--<color name="colorNewLight">#fa5788</color>-->
+    <!--<color name="colorTrendingLight">#5eb8ff</color>-->
+    <!--<color name="colorCollectionLight">#48a999</color>-->
+
+    <!--004c40-->
+    <!--<color name="colorNew">#004c40</color>-->
     <!--<color name="colorNew">#aa4081</color>-->
     <!--<color name="colorTrending">#FFaa81</color>-->
     <!--<color name="colorCollection">#FF40dd</color>-->

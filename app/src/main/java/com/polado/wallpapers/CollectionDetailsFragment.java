@@ -2,6 +2,7 @@ package com.polado.wallpapers;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,12 +20,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout;
+import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 import com.polado.wallpapers.Model.Collection;
 import com.polado.wallpapers.Model.Photo;
 import com.polado.wallpapers.rest.UnsplashApi;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
@@ -37,6 +41,8 @@ public class CollectionDetailsFragment extends Fragment implements AdapterView.O
     ImageView errorMsg;
 
     ProgressBar progressBar;
+
+    SwipyRefreshLayout swipyRefreshLayout;
 
     TextView title, creator;
 
@@ -73,6 +79,23 @@ public class CollectionDetailsFragment extends Fragment implements AdapterView.O
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.i("CollectionDetailsFrag", "onSaveInstanceState");
+        Log.i("photospre", photosList.toString());
+        outState.putParcelableArrayList("photos", photosList);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            // Restore last state for checked position.
+            photosList = savedInstanceState.getParcelableArrayList("photos");
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -81,17 +104,15 @@ public class CollectionDetailsFragment extends Fragment implements AdapterView.O
         Bundle bundle = getArguments();
         String transitionName = "";
         if (bundle != null) {
-            transitionName = bundle.getString("TRANS_NAME");
+            transitionName = bundle.getString("COLLECTION_TRANS_NAME");
             collection = bundle.getParcelable("COLLECTION");
         }
 
         recyclerView = (RecyclerView) view.findViewById(R.id.collection_details_rv);
 
-        slideUp();
+        errorMsg = (ImageView) view.findViewById(R.id.error_msg_iv);
 
-        errorMsg = (ImageView) view.findViewById(R.id.collection_details_error_msg_iv);
-
-        progressBar = (ProgressBar) view.findViewById(R.id.collection_details_pb);
+        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
 
         profilePic = (ImageView) view.findViewById(R.id.collection_details_creator_iv);
         profilePic.setTransitionName(transitionName);
@@ -108,36 +129,141 @@ public class CollectionDetailsFragment extends Fragment implements AdapterView.O
 
         getCollectionPhotos();
 
+        swipyRefreshLayout = (SwipyRefreshLayout) view.findViewById(R.id.collection_details_swipy_refresh);
+
+        swipyRefreshLayout.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh(SwipyRefreshLayoutDirection direction) {
+                if (direction == SwipyRefreshLayoutDirection.TOP) {
+                    refresh();
+                } else {
+                    loadMore();
+                }
+            }
+        });
+
         return view;
     }
 
-    private void getCollectionPhotos() {
+    void refresh() {
+        Toast.makeText(getContext(), "Top", Toast.LENGTH_SHORT).show();
+
         new UnsplashApi().getCollectionPhotos(collection.getId(), 1, perPage, new UnsplashApi.OnPhotosLoadedListener() {
             @Override
             public void onLoaded(ArrayList<Photo> photos) {
+                swipyRefreshLayout.setRefreshing(false);
+
                 progressBar.setVisibility(View.INVISIBLE);
                 errorMsg.setVisibility(View.INVISIBLE);
 
-                photosList = photos;
+                if (Objects.equals(photosList.get(0).getPhotoID(), photos.get(0).getPhotoID())) {
 
-                photosAdapter = new PhotosAdapter(getContext(), photos, onItemClickListener);
+                    Log.i("refresh", "none");
+                    return;
+                } else if (photos.contains(photosList.get(0))) {
+                    int mutualIndex = photos.indexOf(photosList.get(0));
+                    ArrayList<Photo> list = photosList;
+                    photosList.clear();
+                    for (int i = 0; i <= mutualIndex; i++) {
+                        photosList.add(photos.get(i));
+                    }
+                    photosList.addAll(list);
+                    Log.i("refresh", "contains");
+                } else {
+                    ArrayList<Photo> list = photosList;
+                    photosList.clear();
+                    photosList = photos;
+                    photosList.addAll(list);
+                    Log.i("refresh", "new");
+                }
 
-                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-                recyclerView.setLayoutManager(mLayoutManager);
-                recyclerView.setAdapter(photosAdapter);
+                photosAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(String error) {
+                swipyRefreshLayout.setRefreshing(false);
+
+                progressBar.setVisibility(View.INVISIBLE);
+                Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+                Log.v("Error", error);
+            }
+        });
+    }
+
+    void loadMore() {
+        Toast.makeText(getContext(), "Bottom " + numberOfPages, Toast.LENGTH_SHORT).show();
+
+        new UnsplashApi().getCollectionPhotos(collection.getId(), numberOfPages + 1, perPage, new UnsplashApi.OnPhotosLoadedListener() {
+            @Override
+            public void onLoaded(ArrayList<com.polado.wallpapers.Model.Photo> photos) {
+                swipyRefreshLayout.setRefreshing(false);
+
+                progressBar.setVisibility(View.INVISIBLE);
+                errorMsg.setVisibility(View.INVISIBLE);
+
+                photosList.addAll(photos);
+
+                Log.d("loadmore", photos.size() + " " + photosList.size());
+
+                photosAdapter.notifyDataSetChanged();
+
+                recyclerView.smoothScrollToPosition(numberOfPages * perPage);
 
                 numberOfPages++;
             }
 
             @Override
             public void onFailure(String error) {
+                swipyRefreshLayout.setRefreshing(false);
+
                 progressBar.setVisibility(View.INVISIBLE);
-                errorMsg.setVisibility(View.VISIBLE);
                 Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
                 Log.v("Error", error);
-
             }
         });
+    }
+
+    private void getCollectionPhotos() {
+        if (photosList == null)
+            new UnsplashApi().getCollectionPhotos(collection.getId(), 1, perPage, new UnsplashApi.OnPhotosLoadedListener() {
+                @Override
+                public void onLoaded(ArrayList<Photo> photos) {
+                    slideUp();
+
+                    progressBar.setVisibility(View.INVISIBLE);
+                    errorMsg.setVisibility(View.INVISIBLE);
+
+                    photosList = photos;
+
+                    photosAdapter = new PhotosAdapter(getContext(), photos, onItemClickListener);
+
+                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+                    recyclerView.setLayoutManager(mLayoutManager);
+                    recyclerView.setAdapter(photosAdapter);
+
+                    numberOfPages++;
+                }
+
+                @Override
+                public void onFailure(String error) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    errorMsg.setVisibility(View.VISIBLE);
+                    Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+                    Log.v("Error", error);
+
+                }
+            });
+        else {
+            progressBar.setVisibility(View.INVISIBLE);
+            errorMsg.setVisibility(View.INVISIBLE);
+
+            photosAdapter = new PhotosAdapter(getContext(), photosList, onItemClickListener);
+
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+            recyclerView.setLayoutManager(mLayoutManager);
+            recyclerView.setAdapter(photosAdapter);
+        }
     }
 
     @Override
@@ -168,8 +294,8 @@ public class CollectionDetailsFragment extends Fragment implements AdapterView.O
         String imageTransitionName = view.getTransitionName();
 
         Bundle bundle = new Bundle();
-        bundle.putString("TRANS_NAME", imageTransitionName);
-        bundle.putParcelable("IMAGE", photosList.get(position));
+        bundle.putString("PHOTO_TRANS_NAME", imageTransitionName);
+        bundle.putParcelable("PHOTO", photosList.get(position));
 
         detailsFragment.setArguments(bundle);
 

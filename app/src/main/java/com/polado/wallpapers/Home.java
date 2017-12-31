@@ -20,10 +20,12 @@ import android.widget.ImageButton;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 
+// v 0.1.1
+
 public class Home extends AppCompatActivity {
+    public CardView toolbarCV, searchBarCV;
     Snackbar snackbar;
     private Toolbar toolbar;
-    private CardView toolbarCV, searchBarCV;
     private ImageButton searchBtn;
     private NavigationView navigationView;
     private DrawerLayout drawer;
@@ -39,6 +41,10 @@ public class Home extends AppCompatActivity {
             newFragment = NewFragment.newInstance();
             trendingFragment = TrendingFragment.newInstance();
             collectionsFragment = CollectionsFragment.newInstance();
+        } else {
+//            newFragment = (Fragment) savedInstanceState.get("newFragment");
+//            trendingFragment = (Fragment) savedInstanceState.get("trendingFragment");;
+//            collectionsFragment = (Fragment) savedInstanceState.get("collectionsFragment");
         }
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -106,14 +112,18 @@ public class Home extends AppCompatActivity {
     }
 
     protected void showNewFragment() {
+        searchBarCV.setCardBackgroundColor(this.getColor(R.color.colorNewLight));
+
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_up, 0, 0, R.anim.slide_in_down);
 
-        if (newFragment.isAdded())
+        if (newFragment.isAdded()) {
             transaction.show(newFragment);
-        else
+            Log.i("re-click", "new re-click");
+        } else {
             transaction.add(R.id.contentContainer, newFragment, "new");
-
+            Log.i("click", "new click");
+        }
         if (trendingFragment.isAdded())
             transaction.hide(trendingFragment);
 
@@ -121,9 +131,12 @@ public class Home extends AppCompatActivity {
             transaction.hide(collectionsFragment);
 
         transaction.commit();
+
     }
 
     protected void showTrendingFragment() {
+        searchBarCV.setCardBackgroundColor(this.getColor(R.color.colorTrendingLight));
+
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_up, 0, 0, R.anim.slide_in_down);
 
@@ -142,6 +155,8 @@ public class Home extends AppCompatActivity {
     }
 
     protected void showCollectionFragment() {
+        searchBarCV.setCardBackgroundColor(this.getColor(R.color.colorCollectionLight));
+
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_up, 0, 0, R.anim.slide_in_down);
 
@@ -164,7 +179,11 @@ public class Home extends AppCompatActivity {
         // below line to be commented to prevent crash on nougat.
         // http://blog.sqisland.com/2016/09/transactiontoolargeexception-crashes-nougat.html
         //
-        //super.onSaveInstanceState(outState);
+//        super.onSaveInstanceState(outState);
+
+//        outState.putSerializable("newFragment", (Serializable) newFragment);
+//        outState.putSerializable("trendingFragment", (Serializable) trendingFragment);
+//        outState.putSerializable("collectionsFragment", (Serializable) collectionsFragment);
     }
 
     public void openDrawer(View view) {

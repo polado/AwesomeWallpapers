@@ -12,56 +12,6 @@ import java.util.ArrayList;
  */
 
 public class Photo implements Parcelable {
-    @SerializedName("id")
-    private String photoID;
-
-    @SerializedName("created_at")
-    private String createdAt;
-
-    @SerializedName("updated_at")
-    private String updatedAt;
-
-    @SerializedName("width")
-    private int width;
-
-    @SerializedName("height")
-    private int height;
-
-    @SerializedName("color")
-    private String color;
-
-    @SerializedName("downloads")
-    private int downloads;
-
-    @SerializedName("likes")
-    private int likes;
-
-    @SerializedName("liked_by_user")
-    private boolean likedByUser;
-
-    @SerializedName("description")
-    private String description;
-
-    @SerializedName("exif")
-    private Exif exif;
-
-    @SerializedName("location")
-    private Location location;
-
-    @SerializedName("urls")
-    private Urls urls;
-
-    @SerializedName("links")
-    private Links links;
-
-    @SerializedName("user")
-    private User user;
-
-    @SerializedName("categories")
-    private ArrayList<Category> categories = new ArrayList<>();
-
-    // objects: current_user_collections
-
     public final static Parcelable.Creator<Photo> CREATOR = new Parcelable.Creator<Photo>() {
 
         @SuppressWarnings({
@@ -86,7 +36,7 @@ public class Photo implements Parcelable {
             instance.location = ((Location) in.readValue((Location.class.getClassLoader())));
             instance.urls = ((Urls) in.readValue((Urls.class.getClassLoader())));
             in.readList(instance.categories, (Category.class.getClassLoader()));
-            instance.links = ((Links) in.readValue((Links.class.getClassLoader())));
+//            instance.links = ((Links) in.readValue((Links.class.getClassLoader())));
             instance.user = ((User) in.readValue((User.class.getClassLoader())));
 
             return instance;
@@ -97,6 +47,41 @@ public class Photo implements Parcelable {
             return new Photo[size];
         }
     };
+    @SerializedName("id")
+    private String photoID;
+    @SerializedName("created_at")
+    private String createdAt;
+    @SerializedName("updated_at")
+    private String updatedAt;
+    @SerializedName("width")
+    private int width;
+    @SerializedName("height")
+    private int height;
+    @SerializedName("color")
+    private String color;
+    @SerializedName("downloads")
+    private int downloads;
+    @SerializedName("likes")
+    private int likes;
+    @SerializedName("liked_by_user")
+    private boolean likedByUser;
+    @SerializedName("description")
+    private String description;
+    @SerializedName("exif")
+    private Exif exif;
+    @SerializedName("location")
+    private Location location;
+
+    //    @SerializedName("links")
+//    private Links links;
+    @SerializedName("urls")
+    private Urls urls;
+    @SerializedName("user")
+    private User user;
+
+    // objects: current_user_collections
+    @SerializedName("categories")
+    private ArrayList<Category> categories = new ArrayList<>();
 
     public Photo() {
     }
@@ -115,7 +100,7 @@ public class Photo implements Parcelable {
         this.exif = exif;
         this.location = location;
         this.urls = urls;
-        this.links = links;
+//        this.links = links;
         this.user = user;
         this.categories = categories;
     }
@@ -224,13 +209,13 @@ public class Photo implements Parcelable {
         this.location = location;
     }
 
-    public Links getLinks() {
-        return links;
-    }
-
-    public void setLinks(Links links) {
-        this.links = links;
-    }
+//    public Links getLinks() {
+//        return links;
+//    }
+//
+//    public void setLinks(Links links) {
+//        this.links = links;
+//    }
 
     public User getUser() {
         return user;
@@ -268,7 +253,7 @@ public class Photo implements Parcelable {
         dest.writeValue(location);
         dest.writeValue(urls);
         dest.writeList(categories);
-        dest.writeValue(links);
+//        dest.writeValue(links);
         dest.writeValue(user);
     }
 }

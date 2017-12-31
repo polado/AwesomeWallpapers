@@ -1,4 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -21,7 +22,7 @@
                 android:layout_width="@dimen/ic_ml"
                 android:layout_height="@dimen/ic_ml"
                 android:layout_gravity="center"
-                android:layout_margin="5dp"
+                android:layout_margin="4dp"
                 android:src="@mipmap/ic_launcher"
                 android:transitionName="@string/fragment_collection_trans" />
 
@@ -52,27 +53,39 @@
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
-    <ImageView
-        android:id="@+id/collection_details_error_msg_iv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:src="@drawable/error_iv"
-        android:visibility="invisible" />
+    <include
+        layout="@layout/pre_loading_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-    <ProgressBar
-        android:id="@+id/collection_details_pb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="invisible" />
+    <!--<ImageView-->
+    <!--android:id="@+id/collection_details_error_msg_iv"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:src="@drawable/error_iv"-->
+    <!--android:visibility="invisible" />-->
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/collection_details_rv"
+    <!--<ProgressBar-->
+    <!--android:id="@+id/collection_details_pb"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:visibility="invisible" />-->
+
+
+    <com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout
+        android:id="@+id/collection_details_swipy_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingTop="64dp">
+        android:layout_marginTop="56dp"
+        app:srl_direction="both">
 
-    </android.support.v7.widget.RecyclerView>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/collection_details_rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingTop="5dp" />
+    </com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout>
 </FrameLayout>

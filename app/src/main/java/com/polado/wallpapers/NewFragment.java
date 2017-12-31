@@ -29,7 +29,7 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
     PhotosAdapter photosAdapter;
     RecyclerView recyclerView;
 
-    ImageView errorMsgIV;
+    ImageView errorMsg;
 
     ProgressBar progressBar;
 
@@ -70,6 +70,7 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         boolean t;
         t = photosList != null;
         Log.i("new frag", "" + t);
@@ -78,9 +79,9 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
 
         final AdapterView.OnItemClickListener onItemClickListener = this;
 
-        errorMsgIV = (ImageView) view.findViewById(R.id.new_error_msg_iv);
+        errorMsg = (ImageView) view.findViewById(R.id.error_msg_iv);
 
-        progressBar = (ProgressBar) view.findViewById(R.id.new_pb);
+        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
 
         if (photosList == null) {
             progressBar.setVisibility(View.VISIBLE);
@@ -90,7 +91,7 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
                 @Override
                 public void onLoaded(ArrayList<com.polado.wallpapers.Model.Photo> photos) {
                     progressBar.setVisibility(View.INVISIBLE);
-                    errorMsgIV.setVisibility(View.INVISIBLE);
+                    errorMsg.setVisibility(View.INVISIBLE);
 
                     photosList = photos;
 //                    adapterPhotosList = photos;
@@ -108,14 +109,14 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
                 @Override
                 public void onFailure(String error) {
                     progressBar.setVisibility(View.INVISIBLE);
-                    errorMsgIV.setVisibility(View.VISIBLE);
+                    errorMsg.setVisibility(View.VISIBLE);
                     Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
                     Log.v("Error", error);
                 }
             });
         } else {
             progressBar.setVisibility(View.INVISIBLE);
-            errorMsgIV.setVisibility(View.INVISIBLE);
+            errorMsg.setVisibility(View.INVISIBLE);
 
             photosAdapter = new PhotosAdapter(getContext(), photosList, onItemClickListener);
             recyclerView = (RecyclerView) view.findViewById(R.id.new_images_rv);
@@ -142,6 +143,10 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
         return view;
     }
 
+    public void scroll() {
+        recyclerView.smoothScrollToPosition(0);
+    }
+
     void refresh() {
         Toast.makeText(getContext(), "Top", Toast.LENGTH_SHORT).show();
 
@@ -152,7 +157,7 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
                 swipyRefreshLayout.setRefreshing(false);
 
                 progressBar.setVisibility(View.INVISIBLE);
-                errorMsgIV.setVisibility(View.INVISIBLE);
+                errorMsg.setVisibility(View.INVISIBLE);
 
                 if (Objects.equals(photosList.get(0).getPhotoID(), photos.get(0).getPhotoID())) {
 
@@ -200,7 +205,7 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
                 swipyRefreshLayout.setRefreshing(false);
 
                 progressBar.setVisibility(View.INVISIBLE);
-                errorMsgIV.setVisibility(View.INVISIBLE);
+                errorMsg.setVisibility(View.INVISIBLE);
 
                 photosList.addAll(photos);
 
@@ -255,8 +260,8 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
         String imageTransitionName = view.getTransitionName();
 
         Bundle bundle = new Bundle();
-        bundle.putString("TRANS_NAME", imageTransitionName);
-        bundle.putParcelable("IMAGE", photosList.get(position));
+        bundle.putString("PHOTO_TRANS_NAME", imageTransitionName);
+        bundle.putParcelable("PHOTO", photosList.get(position));
 
         detailsFragment.setArguments(bundle);
 

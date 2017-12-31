@@ -167,8 +167,8 @@ public class PhotoDetailsFragment extends Fragment {
         Bundle bundle = getArguments();
         String transitionName = "";
         if (bundle != null) {
-            transitionName = bundle.getString("TRANS_NAME");
-            photo = bundle.getParcelable("IMAGE");
+            transitionName = bundle.getString("PHOTO_TRANS_NAME");
+            photo = bundle.getParcelable("PHOTO");
         }
 
         linearLayout = (LinearLayout) view.findViewById(R.id.image_details_ll);

@@ -1,12 +1,12 @@
 package com.polado.wallpapers;
 
-
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,16 +22,13 @@ import com.polado.wallpapers.Model.Collection;
 import com.polado.wallpapers.rest.UnsplashApi;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class CollectionsFragment extends Fragment implements AdapterView.OnItemClickListener {
     CollectionsAdapter collectionsAdapter;
     RecyclerView recyclerView;
 
-    ImageView errorMsgIV;
+    ImageView errorMsg;
 
     ProgressBar progressBar;
 
@@ -83,9 +80,9 @@ public class CollectionsFragment extends Fragment implements AdapterView.OnItemC
 
         final AdapterView.OnItemClickListener onItemClickListener = this;
 
-        errorMsgIV = (ImageView) view.findViewById(R.id.collections_error_msg_iv);
+        errorMsg = (ImageView) view.findViewById(R.id.error_msg_iv);
 
-        progressBar = (ProgressBar) view.findViewById(R.id.collections_pb);
+        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
 
         if (collectionsList == null) {
             progressBar.setVisibility(View.VISIBLE);
@@ -94,9 +91,7 @@ public class CollectionsFragment extends Fragment implements AdapterView.OnItemC
                 @Override
                 public void onLoaded(ArrayList<Collection> collections) {
                     progressBar.setVisibility(View.INVISIBLE);
-                    errorMsgIV.setVisibility(View.INVISIBLE);
-
-                    collectionsList = collections;
+                    errorMsg.setVisibility(View.INVISIBLE);
 
                     collectionsList = collections;
 
@@ -113,14 +108,14 @@ public class CollectionsFragment extends Fragment implements AdapterView.OnItemC
                 @Override
                 public void onFailure(String error) {
                     progressBar.setVisibility(View.INVISIBLE);
-                    errorMsgIV.setVisibility(View.VISIBLE);
+                    errorMsg.setVisibility(View.VISIBLE);
                     Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
                     Log.v("Error", error);
                 }
             });
         } else {
             progressBar.setVisibility(View.INVISIBLE);
-            errorMsgIV.setVisibility(View.INVISIBLE);
+            errorMsg.setVisibility(View.INVISIBLE);
 
             collectionsAdapter = new CollectionsAdapter(getContext(), collectionsList, onItemClickListener);
             recyclerView = (RecyclerView) view.findViewById(R.id.collections_images_rv);
@@ -137,14 +132,91 @@ public class CollectionsFragment extends Fragment implements AdapterView.OnItemC
             @Override
             public void onRefresh(SwipyRefreshLayoutDirection direction) {
                 if (direction == SwipyRefreshLayoutDirection.TOP) {
-//                    refresh();
+                    refresh();
                 } else {
-//                    loadMore();
+                    loadMore();
                 }
             }
         });
 
         return view;
+    }
+
+    void refresh() {
+        Toast.makeText(getContext(), "Top", Toast.LENGTH_SHORT).show();
+
+        new UnsplashApi().getFeaturedCollections(1, perPage, new UnsplashApi.OnCollectionsLoadedListener() {
+            @Override
+            public void onLoaded(ArrayList<Collection> collections) {
+                swipyRefreshLayout.setRefreshing(false);
+
+                progressBar.setVisibility(View.INVISIBLE);
+                errorMsg.setVisibility(View.INVISIBLE);
+
+                if (Objects.equals(collectionsList.get(0).getId(), collections.get(0).getId())) {
+
+                    Log.i("refresh", "none");
+                    return;
+                } else if (collections.contains(collectionsList.get(0))) {
+                    int mutualIndex = collections.indexOf(collectionsList.get(0));
+                    ArrayList<Collection> list = collectionsList;
+                    collectionsList.clear();
+                    for (int i = 0; i <= mutualIndex; i++) {
+                        collectionsList.add(collections.get(i));
+                    }
+                    collectionsList.addAll(list);
+                    Log.i("refresh", "contains");
+                } else {
+                    ArrayList<Collection> list = collectionsList;
+                    collectionsList.clear();
+                    collectionsList = collections;
+                    collectionsList.addAll(list);
+                    Log.i("refresh", "new");
+                }
+
+                collectionsAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(String error) {
+                swipyRefreshLayout.setRefreshing(false);
+
+                progressBar.setVisibility(View.INVISIBLE);
+                Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+                Log.v("Error", error);
+            }
+        });
+    }
+
+    void loadMore() {
+        new UnsplashApi().getFeaturedCollections(numberOfPages + 1, perPage, new UnsplashApi.OnCollectionsLoadedListener() {
+            @Override
+            public void onLoaded(ArrayList<Collection> collections) {
+                swipyRefreshLayout.setRefreshing(false);
+
+                progressBar.setVisibility(View.INVISIBLE);
+                errorMsg.setVisibility(View.INVISIBLE);
+
+                collectionsList.addAll(collections);
+
+                Log.d("loadmore", collections.size() + " " + collectionsList.size());
+
+                collectionsAdapter.notifyDataSetChanged();
+
+                recyclerView.smoothScrollToPosition(numberOfPages * perPage);
+
+                numberOfPages++;
+            }
+
+            @Override
+            public void onFailure(String error) {
+                swipyRefreshLayout.setRefreshing(false);
+
+                progressBar.setVisibility(View.INVISIBLE);
+                Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+                Log.v("Error", error);
+            }
+        });
     }
 
     @Override
@@ -165,20 +237,20 @@ public class CollectionsFragment extends Fragment implements AdapterView.OnItemC
     public void makeTransition(ImageView view, int position) {
         CollectionDetailsFragment detailsFragment = new CollectionDetailsFragment();
 
-//        setSharedElementReturnTransition(TransitionInflater.from(
-//                getActivity()).inflateTransition(R.transition.change_image_trans));
-//        setExitTransition(TransitionInflater.from(
-//                getActivity()).inflateTransition(android.R.transition.fade));
-//
-//        detailsFragment.setSharedElementEnterTransition(TransitionInflater.from(
-//                getActivity()).inflateTransition(R.transition.change_image_trans));
-//        detailsFragment.setEnterTransition(TransitionInflater.from(
-//                getActivity()).inflateTransition(android.R.transition.fade));
+        setSharedElementReturnTransition(TransitionInflater.from(
+                getActivity()).inflateTransition(R.transition.change_image_trans));
+        setExitTransition(TransitionInflater.from(
+                getActivity()).inflateTransition(android.R.transition.fade));
+
+        detailsFragment.setSharedElementEnterTransition(TransitionInflater.from(
+                getActivity()).inflateTransition(R.transition.change_image_trans));
+        detailsFragment.setEnterTransition(TransitionInflater.from(
+                getActivity()).inflateTransition(android.R.transition.fade));
 
         String imageTransitionName = view.getTransitionName();
 
         Bundle bundle = new Bundle();
-        bundle.putString("TRANS_NAME", imageTransitionName);
+        bundle.putString("COLLECTION_TRANS_NAME", imageTransitionName);
         bundle.putParcelable("COLLECTION", collectionsList.get(position));
 
         detailsFragment.setArguments(bundle);
@@ -186,7 +258,7 @@ public class CollectionsFragment extends Fragment implements AdapterView.OnItemC
         FragmentManager fragmentManager = getFragmentManager();
 
         fragmentManager.beginTransaction()
-//                .addSharedElement(view, imageTransitionName)
+                .addSharedElement(view, imageTransitionName)
                 .hide(this)
                 .addToBackStack("collection")
                 .replace(R.id.contentContainer, detailsFragment, "CollectionDetails")

@@ -28,7 +28,7 @@ public class TrendingFragment extends Fragment implements AdapterView.OnItemClic
     PhotosAdapter photosAdapter;
     RecyclerView recyclerView;
 
-    ImageView errorMsgIV;
+    ImageView errorMsg;
 
     ProgressBar progressBar;
 
@@ -70,9 +70,9 @@ public class TrendingFragment extends Fragment implements AdapterView.OnItemClic
 
         final AdapterView.OnItemClickListener onItemClickListener = this;
 
-        errorMsgIV = (ImageView) view.findViewById(R.id.trending_error_msg_iv);
+        errorMsg = (ImageView) view.findViewById(R.id.error_msg_iv);
 
-        progressBar = (ProgressBar) view.findViewById(R.id.trending_pb);
+        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
 
         if (photosList == null) {
             progressBar.setVisibility(View.VISIBLE);
@@ -82,7 +82,7 @@ public class TrendingFragment extends Fragment implements AdapterView.OnItemClic
                 @Override
                 public void onLoaded(ArrayList<com.polado.wallpapers.Model.Photo> photos) {
                     progressBar.setVisibility(View.INVISIBLE);
-                    errorMsgIV.setVisibility(View.INVISIBLE);
+                    errorMsg.setVisibility(View.INVISIBLE);
 
                     photosList = photos;
 
@@ -99,14 +99,14 @@ public class TrendingFragment extends Fragment implements AdapterView.OnItemClic
                 @Override
                 public void onFailure(String error) {
                     progressBar.setVisibility(View.INVISIBLE);
-                    errorMsgIV.setVisibility(View.VISIBLE);
+                    errorMsg.setVisibility(View.VISIBLE);
                     Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
                     Log.v("Error", error);
                 }
             });
         } else {
             progressBar.setVisibility(View.INVISIBLE);
-            errorMsgIV.setVisibility(View.INVISIBLE);
+            errorMsg.setVisibility(View.INVISIBLE);
             photosAdapter = new PhotosAdapter(getContext(), photosList, onItemClickListener);
             recyclerView = (RecyclerView) view.findViewById(R.id.trending_images_rv);
 
@@ -141,7 +141,7 @@ public class TrendingFragment extends Fragment implements AdapterView.OnItemClic
                 swipyRefreshLayout.setRefreshing(false);
 
                 progressBar.setVisibility(View.INVISIBLE);
-                errorMsgIV.setVisibility(View.INVISIBLE);
+                errorMsg.setVisibility(View.INVISIBLE);
 
                 if (Objects.equals(photosList.get(0).getPhotoID(), photos.get(0).getPhotoID())) {
 
@@ -176,7 +176,6 @@ public class TrendingFragment extends Fragment implements AdapterView.OnItemClic
                 Log.v("Error", error);
             }
         });
-
     }
 
     void loadMore() {
@@ -189,7 +188,7 @@ public class TrendingFragment extends Fragment implements AdapterView.OnItemClic
                 swipyRefreshLayout.setRefreshing(false);
 
                 progressBar.setVisibility(View.INVISIBLE);
-                errorMsgIV.setVisibility(View.INVISIBLE);
+                errorMsg.setVisibility(View.INVISIBLE);
 
                 photosList.addAll(photos);
 
@@ -245,8 +244,8 @@ public class TrendingFragment extends Fragment implements AdapterView.OnItemClic
         String imageTransitionName = view.getTransitionName();
 
         Bundle bundle = new Bundle();
-        bundle.putString("TRANS_NAME", imageTransitionName);
-        bundle.putParcelable("IMAGE", photosList.get(position));
+        bundle.putString("PHOTO_TRANS_NAME", imageTransitionName);
+        bundle.putParcelable("PHOTO", photosList.get(position));
 
         detailsFragment.setArguments(bundle);
 

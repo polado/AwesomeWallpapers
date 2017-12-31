@@ -1,13 +1,37 @@
 package com.polado.wallpapers.Model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by PolaDo on 11/18/2017.
  */
 
-public class Urls {
+public class Urls implements Parcelable {
 
+    public final static Parcelable.Creator<Urls> CREATOR = new Parcelable.Creator<Urls>() {
+
+
+        @SuppressWarnings({
+                "unchecked"
+        })
+        public Urls createFromParcel(Parcel in) {
+            Urls instance = new Urls();
+            instance.raw = ((String) in.readValue((String.class.getClassLoader())));
+            instance.full = ((String) in.readValue((String.class.getClassLoader())));
+            instance.regular = ((String) in.readValue((String.class.getClassLoader())));
+            instance.small = ((String) in.readValue((String.class.getClassLoader())));
+            instance.thumb = ((String) in.readValue((String.class.getClassLoader())));
+            return instance;
+        }
+
+        public Urls[] newArray(int size) {
+            return (new Urls[size]);
+        }
+
+    };
     @SerializedName("raw")
     private String raw;
     @SerializedName("full")
@@ -68,5 +92,17 @@ public class Urls {
 
     public void setThumb(String thumb) {
         this.thumb = thumb;
+    }
+
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(raw);
+        dest.writeValue(full);
+        dest.writeValue(regular);
+        dest.writeValue(small);
+        dest.writeValue(thumb);
+    }
+
+    public int describeContents() {
+        return 0;
     }
 }

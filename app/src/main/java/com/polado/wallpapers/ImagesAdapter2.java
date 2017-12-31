@@ -26,7 +26,7 @@ public class ImagesAdapter2 extends RecyclerView.Adapter<ImagesAdapter2.ViewHold
 
     Context context;
 
-//    ArrayList<String> strings;
+    //    ArrayList<String> strings;
 //    ArrayList<Drawable> images;
     ArrayList<com.polado.wallpapers.Model.Photo> photos;
 
@@ -121,7 +121,7 @@ public class ImagesAdapter2 extends RecyclerView.Adapter<ImagesAdapter2.ViewHold
 
     @Override
     public int getItemCount() {
-        return photos .size();
+        return photos.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
