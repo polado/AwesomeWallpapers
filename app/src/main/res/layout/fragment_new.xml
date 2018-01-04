@@ -27,21 +27,30 @@
     <!--android:layout_height="wrap_content"-->
     <!--android:layout_gravity="center"-->
     <!--android:visibility="invisible" />-->
-
-    <com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout
-        android:id="@+id/new_swipy_refresh"
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="56dp"
-        app:srl_direction="both">
+        android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/new_images_rv"
+        <com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout
+            android:id="@+id/new_swipy_refresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingTop="56dp" />
-    </com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout>
+            android:layout_marginBottom="56dp"
+            app:srl_direction="both">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/new_images_rv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingTop="56dp" />
+        </com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout>
+
+        <include
+            layout="@layout/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bar_height" />
+    </android.support.design.widget.CoordinatorLayout>
 </FrameLayout>
 
 

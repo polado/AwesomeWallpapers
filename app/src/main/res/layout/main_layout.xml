@@ -12,10 +12,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <include
-        layout="@layout/app_bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/bar_height" />
+    <!--<include-->
+    <!--android:visibility="gone"-->
+    <!--layout="@layout/app_bar_layout"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="@dimen/bar_height" />-->
 
 
     <com.roughike.bottombar.BottomBar

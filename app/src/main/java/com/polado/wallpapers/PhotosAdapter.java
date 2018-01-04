@@ -76,8 +76,9 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
         holder.numOfLikes.setText(String.valueOf(photo.getLikes()));
         holder.creator.setText(photo.getUser().getName());
 
+//        holder.imageView.setMaxHeight((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, context.getResources().getDisplayMetrics()));
+ 
         holder.imageView.getLayoutParams().height = new PhotoDimensions(context, photo).getHeight();
-
         GradientDrawable gradientDrawable = new GradientDrawable();
         gradientDrawable.setShape(GradientDrawable.RECTANGLE);
         gradientDrawable.setColor(Color.parseColor(photo.getColor()));

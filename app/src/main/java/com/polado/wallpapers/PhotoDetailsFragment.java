@@ -225,6 +225,9 @@ public class PhotoDetailsFragment extends Fragment {
 
         detailsLayout = view.findViewById(R.id.details_layout_include);
 
+
+        Log.i("description", "msggg " + photo.getDescription());
+
         if (photoData == null)
             Log.i("photodata", "null");
         else Log.i("photodata", "not null");
@@ -344,6 +347,9 @@ public class PhotoDetailsFragment extends Fragment {
 
             }
         }
+
+        Log.i("PhotoDisc", "msg: " + photoData.getDescription());
+
         categories.setText(categoriesList.toString());
     }
 
@@ -438,8 +444,7 @@ public class PhotoDetailsFragment extends Fragment {
     }
 
     public void getPhotoData() {
-        UnsplashApi unsplashApi = new UnsplashApi();
-        unsplashApi.getPhotoByID(photo.getPhotoID(), null, null, new UnsplashApi.OnPhotoLoadedListener() {
+        new UnsplashApi().getPhotoByID(photo.getPhotoID(), null, null, new UnsplashApi.OnPhotoLoadedListener() {
             @Override
             public void onLoaded(Photo photo) {
                 photoData = photo;

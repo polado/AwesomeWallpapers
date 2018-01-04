@@ -1,17 +1,24 @@
 package com.polado.wallpapers;
 
+import android.animation.Animator;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -26,18 +33,18 @@ import java.util.Objects;
 
 
 public class NewFragment extends Fragment implements AdapterView.OnItemClickListener {
+    public CardView toolbarCV, searchBarCV;
     PhotosAdapter photosAdapter;
     RecyclerView recyclerView;
-
     ImageView errorMsg;
-
     ProgressBar progressBar;
-
     SwipyRefreshLayout swipyRefreshLayout;
-
     ArrayList<Photo> photosList = null, adapterPhotosList = null;
-
     int numberOfPages = 0, perPage = 10;
+    private Toolbar toolbar;
+    private ImageButton searchBtn, navDrawerBtn, cancelSearchBtn;
+    private NavigationView navigationView;
+    private DrawerLayout drawer;
 
     public static NewFragment newInstance() {
         Log.i("NewFragment", "newInstance");
@@ -68,6 +75,13 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+//        appbarInitialization(view);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -76,6 +90,13 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
         Log.i("new frag", "" + t);
         Log.i("NewFragment", "onCreateView");
         final View view = inflater.inflate(R.layout.fragment_new, container, false);
+
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                appbarInitialization(view);
+            }
+        });
 
         final AdapterView.OnItemClickListener onItemClickListener = this;
 
@@ -273,5 +294,117 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
                 .addToBackStack("new")
                 .replace(R.id.contentContainer, detailsFragment, "PhotoDetails")
                 .commit();
+    }
+
+    private void appbarInitialization(View view) {
+        toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+
+        drawer = (DrawerLayout) view.findViewById(R.id.drawer_layout);
+        navigationView = (NavigationView) view.findViewById(R.id.nav_view);
+        navDrawerBtn = (ImageButton) view.findViewById(R.id.nav_drawer_btn);
+
+        toolbarCV = (CardView) view.findViewById(R.id.toolbar_cv);
+        searchBarCV = (CardView) view.findViewById(R.id.search_bar_cv);
+        searchBtn = (ImageButton) view.findViewById(R.id.search_btn);
+        cancelSearchBtn = (ImageButton) view.findViewById(R.id.cancel_search_btn);
+
+        navDrawerBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openDrawer();
+            }
+        });
+
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                search();
+            }
+        });
+
+        cancelSearchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cancelSearch();
+            }
+        });
+
+        searchBarCV.setCardBackgroundColor(getContext().getResources().getColor(R.color.colorNewLight));
+    }
+
+    public void openDrawer() {
+        ((Home) getActivity()).openDrawer();
+    }
+
+    public void search() {
+        circularRevealAnimation(searchBtn);
+    }
+
+    public void cancelSearch() {
+        reverseCircularRevealAnimation(searchBtn);
+    }
+
+    public void circularRevealAnimation(View v) {
+        int cx = (v.getLeft() + v.getRight()) / 2;
+        int cy = (v.getTop() + v.getBottom()) / 2;
+
+        float radius = Math.max(searchBarCV.getWidth(), searchBarCV.getHeight());
+
+        Animator animator = ViewAnimationUtils.createCircularReveal(searchBarCV, cx, cy, 0, radius)
+                .setDuration(400);
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                searchBarCV.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                toolbarCV.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        animator.start();
+    }
+
+    public void reverseCircularRevealAnimation(View v) {
+        int cx = (v.getLeft() + v.getRight()) / 2;
+        int cy = (v.getTop() + v.getBottom()) / 2;
+
+        float radius = Math.max(toolbarCV.getWidth(), toolbarCV.getHeight());
+
+        Animator animator = ViewAnimationUtils.createCircularReveal(searchBarCV, cx, cy, radius, 0)
+                .setDuration(400);
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                toolbarCV.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                searchBarCV.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        animator.start();
     }
 }

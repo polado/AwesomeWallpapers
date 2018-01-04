@@ -47,6 +47,7 @@ public class Photo implements Parcelable {
             return new Photo[size];
         }
     };
+
     @SerializedName("id")
     private String photoID;
     @SerializedName("created_at")
@@ -249,6 +250,7 @@ public class Photo implements Parcelable {
         dest.writeValue(downloads);
         dest.writeValue(likes);
         dest.writeValue(likedByUser);
+        dest.writeValue(description);
         dest.writeValue(exif);
         dest.writeValue(location);
         dest.writeValue(urls);

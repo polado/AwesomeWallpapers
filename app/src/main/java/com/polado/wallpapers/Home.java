@@ -1,6 +1,5 @@
 package com.polado.wallpapers;
 
-import android.animation.Animator;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.design.widget.NavigationView;
@@ -10,26 +9,22 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewAnimationUtils;
-import android.widget.ImageButton;
 
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 
-// v 0.1.1
+// v 0.1.2
 
 public class Home extends AppCompatActivity {
-    public CardView toolbarCV, searchBarCV;
     Snackbar snackbar;
-    private Toolbar toolbar;
-    private ImageButton searchBtn;
+    //    public CardView toolbarCV, searchBarCV;
+//    private Toolbar toolbar;
+//    private ImageButton searchBtn;
     private NavigationView navigationView;
     private DrawerLayout drawer;
-    private View navHeader;
+    //    private View navHeader;
     private Fragment newFragment, trendingFragment, collectionsFragment;
 
     @Override
@@ -47,14 +42,14 @@ public class Home extends AppCompatActivity {
 //            collectionsFragment = (Fragment) savedInstanceState.get("collectionsFragment");
         }
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-
+//        toolbar = (Toolbar) findViewById(R.id.toolbar);
+//
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
-
-        toolbarCV = (CardView) findViewById(R.id.toolbar_cv);
-        searchBarCV = (CardView) findViewById(R.id.search_bar_cv);
-        searchBtn = (ImageButton) findViewById(R.id.search_btn);
+//
+//        toolbarCV = (CardView) findViewById(R.id.toolbar_cv);
+//        searchBarCV = (CardView) findViewById(R.id.search_bar_cv);
+//        searchBtn = (ImageButton) findViewById(R.id.search_btn);
 
         final BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
@@ -96,15 +91,15 @@ public class Home extends AppCompatActivity {
 
                 if (photoDetails != null && photoDetails.isVisible()) {
                     Log.i("HomeFragmentChange", "photoDetails");
-                    toolbar.setVisibility(View.INVISIBLE);
+//                    toolbar.setVisibility(View.INVISIBLE);
                     bottomBar.setVisibility(View.INVISIBLE);
                 } else if (collectionDetails != null && collectionDetails.isVisible()) {
                     Log.i("HomeFragmentChange", "collectionDetails");
-                    toolbar.setVisibility(View.INVISIBLE);
+//                    toolbar.setVisibility(View.INVISIBLE);
                     bottomBar.setVisibility(View.INVISIBLE);
                 } else {
                     Log.i("HomeFragmentChange", "not photoDetails or collectionDetails");
-                    toolbar.setVisibility(View.VISIBLE);
+//                    toolbar.setVisibility(View.VISIBLE);
                     bottomBar.setVisibility(View.VISIBLE);
                 }
             }
@@ -112,7 +107,7 @@ public class Home extends AppCompatActivity {
     }
 
     protected void showNewFragment() {
-        searchBarCV.setCardBackgroundColor(this.getColor(R.color.colorNewLight));
+//        searchBarCV.setCardBackgroundColor(this.getColor(R.color.colorNewLight));
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_up, 0, 0, R.anim.slide_in_down);
@@ -135,7 +130,7 @@ public class Home extends AppCompatActivity {
     }
 
     protected void showTrendingFragment() {
-        searchBarCV.setCardBackgroundColor(this.getColor(R.color.colorTrendingLight));
+//        searchBarCV.setCardBackgroundColor(this.getColor(R.color.colorTrendingLight));
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_up, 0, 0, R.anim.slide_in_down);
@@ -155,7 +150,7 @@ public class Home extends AppCompatActivity {
     }
 
     protected void showCollectionFragment() {
-        searchBarCV.setCardBackgroundColor(this.getColor(R.color.colorCollectionLight));
+//        searchBarCV.setCardBackgroundColor(this.getColor(R.color.colorCollectionLight));
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_up, 0, 0, R.anim.slide_in_down);
@@ -186,79 +181,80 @@ public class Home extends AppCompatActivity {
 //        outState.putSerializable("collectionsFragment", (Serializable) collectionsFragment);
     }
 
-    public void openDrawer(View view) {
+    //
+    public void openDrawer() {
         drawer.openDrawer(navigationView);
     }
-
-    public void search(View view) {
-        circularRevealAnimation(searchBtn);
-    }
-
-    public void cancelSearch(View view) {
-        reverseCircularRevealAnimation(searchBtn);
-    }
-
-    public void circularRevealAnimation(View v) {
-        int cx = (v.getLeft() + v.getRight()) / 2;
-        int cy = (v.getTop() + v.getBottom()) / 2;
-
-        float radius = Math.max(searchBarCV.getWidth(), searchBarCV.getHeight());
-
-        Animator animator = ViewAnimationUtils.createCircularReveal(searchBarCV, cx, cy, 0, radius)
-                .setDuration(400);
-        animator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                searchBarCV.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                toolbarCV.setVisibility(View.INVISIBLE);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
-        animator.start();
-    }
-
-    public void reverseCircularRevealAnimation(View v) {
-        int cx = (v.getLeft() + v.getRight()) / 2;
-        int cy = (v.getTop() + v.getBottom()) / 2;
-
-        float radius = Math.max(toolbarCV.getWidth(), toolbarCV.getHeight());
-
-        Animator animator = ViewAnimationUtils.createCircularReveal(searchBarCV, cx, cy, radius, 0)
-                .setDuration(400);
-        animator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                toolbarCV.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                searchBarCV.setVisibility(View.INVISIBLE);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
-        animator.start();
-    }
+//
+//    public void search(View view) {
+//        circularRevealAnimation(searchBtn);
+//    }
+//
+//    public void cancelSearch(View view) {
+//        reverseCircularRevealAnimation(searchBtn);
+//    }
+//
+//    public void circularRevealAnimation(View v) {
+//        int cx = (v.getLeft() + v.getRight()) / 2;
+//        int cy = (v.getTop() + v.getBottom()) / 2;
+//
+//        float radius = Math.max(searchBarCV.getWidth(), searchBarCV.getHeight());
+//
+//        Animator animator = ViewAnimationUtils.createCircularReveal(searchBarCV, cx, cy, 0, radius)
+//                .setDuration(400);
+//        animator.addListener(new Animator.AnimatorListener() {
+//            @Override
+//            public void onAnimationStart(Animator animation) {
+//                searchBarCV.setVisibility(View.VISIBLE);
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animator animation) {
+//                toolbarCV.setVisibility(View.INVISIBLE);
+//            }
+//
+//            @Override
+//            public void onAnimationCancel(Animator animation) {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationRepeat(Animator animation) {
+//
+//            }
+//        });
+//        animator.start();
+//    }
+//
+//    public void reverseCircularRevealAnimation(View v) {
+//        int cx = (v.getLeft() + v.getRight()) / 2;
+//        int cy = (v.getTop() + v.getBottom()) / 2;
+//
+//        float radius = Math.max(toolbarCV.getWidth(), toolbarCV.getHeight());
+//
+//        Animator animator = ViewAnimationUtils.createCircularReveal(searchBarCV, cx, cy, radius, 0)
+//                .setDuration(400);
+//        animator.addListener(new Animator.AnimatorListener() {
+//            @Override
+//            public void onAnimationStart(Animator animation) {
+//                toolbarCV.setVisibility(View.VISIBLE);
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animator animation) {
+//                searchBarCV.setVisibility(View.INVISIBLE);
+//            }
+//
+//            @Override
+//            public void onAnimationCancel(Animator animation) {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationRepeat(Animator animation) {
+//
+//            }
+//        });
+//        animator.start();
+//    }
 }
