@@ -27,6 +27,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <include
+            layout="@layout/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bar_height" />
+
         <com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout
             android:id="@+id/collections_swipy_refresh"
             android:layout_width="match_parent"
@@ -41,10 +46,5 @@
                 android:clipToPadding="false"
                 android:paddingTop="56dp" />
         </com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout>
-
-        <include
-            layout="@layout/app_bar_layout"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/bar_height" />
     </android.support.design.widget.CoordinatorLayout>
 </FrameLayout>

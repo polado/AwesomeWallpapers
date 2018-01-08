@@ -29,7 +29,6 @@ import com.polado.wallpapers.Model.Photo;
 import com.polado.wallpapers.rest.UnsplashApi;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 
 public class NewFragment extends Fragment implements AdapterView.OnItemClickListener {
@@ -41,6 +40,9 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
     SwipyRefreshLayout swipyRefreshLayout;
     ArrayList<Photo> photosList = null, adapterPhotosList = null;
     int numberOfPages = 0, perPage = 10;
+
+    AdapterView.OnItemClickListener onItemClickListener;
+
     private Toolbar toolbar;
     private ImageButton searchBtn, navDrawerBtn, cancelSearchBtn;
     private NavigationView navigationView;
@@ -98,7 +100,7 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
             }
         });
 
-        final AdapterView.OnItemClickListener onItemClickListener = this;
+        onItemClickListener = this;
 
         errorMsg = (ImageView) view.findViewById(R.id.error_msg_iv);
 
@@ -107,8 +109,7 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
         if (photosList == null) {
             progressBar.setVisibility(View.VISIBLE);
 
-            UnsplashApi unsplashApi = new UnsplashApi();
-            unsplashApi.getPhotosList(1, perPage, "latest", new UnsplashApi.OnPhotosLoadedListener() {
+            new UnsplashApi().getPhotosList(1, perPage, "latest", new UnsplashApi.OnPhotosLoadedListener() {
                 @Override
                 public void onLoaded(ArrayList<com.polado.wallpapers.Model.Photo> photos) {
                     progressBar.setVisibility(View.INVISIBLE);
@@ -147,7 +148,6 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
             recyclerView.setAdapter(photosAdapter);
         }
 
-
         swipyRefreshLayout = (SwipyRefreshLayout) view.findViewById(R.id.new_swipy_refresh);
 
         swipyRefreshLayout.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
@@ -169,10 +169,11 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
     }
 
     void refresh() {
-        Toast.makeText(getContext(), "Top", Toast.LENGTH_SHORT).show();
+        numberOfPages = 0;
 
-        UnsplashApi unsplashApi = new UnsplashApi();
-        unsplashApi.getPhotosList(1, perPage, "latest", new UnsplashApi.OnPhotosLoadedListener() {
+        Toast.makeText(getContext(), "Refresh", Toast.LENGTH_SHORT).show();
+
+        new UnsplashApi().getPhotosList(1, perPage, "latest", new UnsplashApi.OnPhotosLoadedListener() {
             @Override
             public void onLoaded(ArrayList<Photo> photos) {
                 swipyRefreshLayout.setRefreshing(false);
@@ -180,28 +181,14 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
                 progressBar.setVisibility(View.INVISIBLE);
                 errorMsg.setVisibility(View.INVISIBLE);
 
-                if (Objects.equals(photosList.get(0).getPhotoID(), photos.get(0).getPhotoID())) {
+                photosList = photos;
+                photosAdapter = new PhotosAdapter(getContext(), photosList, onItemClickListener);
 
-                    Log.i("refresh", "none");
-                    return;
-                } else if (photos.contains(photosList.get(0))) {
-                    int mutualIndex = photos.indexOf(photosList.get(0));
-                    ArrayList<Photo> list = photosList;
-                    photosList.clear();
-                    for (int i = 0; i <= mutualIndex; i++) {
-                        photosList.add(photos.get(i));
-                    }
-                    photosList.addAll(list);
-                    Log.i("refresh", "contains");
-                } else {
-                    ArrayList<Photo> list = photosList;
-                    photosList.clear();
-                    photosList = photos;
-                    photosList.addAll(list);
-                    Log.i("refresh", "new");
-                }
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+                recyclerView.setLayoutManager(mLayoutManager);
+                recyclerView.setAdapter(photosAdapter);
 
-                photosAdapter.notifyDataSetChanged();
+                numberOfPages++;
             }
 
             @Override
@@ -213,16 +200,61 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
                 Log.v("Error", error);
             }
         });
-
     }
 
-    void loadMore() {
-        Toast.makeText(getContext(), "Bottom " + numberOfPages, Toast.LENGTH_SHORT).show();
+//    void refresh() {
+//        Toast.makeText(getContext(), "Top", Toast.LENGTH_SHORT).show();
+//
+//        new UnsplashApi().getPhotosList(1, perPage, "latest", new UnsplashApi.OnPhotosLoadedListener() {
+//            @Override
+//            public void onLoaded(ArrayList<Photo> photos) {
+//                swipyRefreshLayout.setRefreshing(false);
+//
+//                progressBar.setVisibility(View.INVISIBLE);
+//                errorMsg.setVisibility(View.INVISIBLE);
+//
+//                if (Objects.equals(photosList.get(0).getPhotoID(), photos.get(0).getPhotoID())) {
+//
+//                    Log.i("refresh", "none");
+//                    return;
+//                } else if (photos.contains(photosList.get(0))) {
+//                    int mutualIndex = photos.indexOf(photosList.get(0));
+//                    ArrayList<Photo> list = photosList;
+//                    photosList.clear();
+//                    for (int i = 0; i <= mutualIndex; i++) {
+//                        photosList.add(photos.get(i));
+//                    }
+//                    photosList.addAll(list);
+//                    Log.i("refresh", "contains");
+//                } else {
+//                    ArrayList<Photo> list = photosList;
+//                    photosList.clear();
+//                    photosList = photos;
+//                    photosList.addAll(list);
+//                    Log.i("refresh", "new");
+//                }
+//
+//                photosAdapter.notifyDataSetChanged();
+//            }
+//
+//            @Override
+//            public void onFailure(String error) {
+//                swipyRefreshLayout.setRefreshing(false);
+//
+//                progressBar.setVisibility(View.INVISIBLE);
+//                Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+//                Log.v("Error", error);
+//            }
+//        });
+//
+//    }
 
-        UnsplashApi unsplashApi = new UnsplashApi();
-        unsplashApi.getPhotosList((numberOfPages + 1), perPage, "latest", new UnsplashApi.OnPhotosLoadedListener() {
+    void loadMore() {
+        Toast.makeText(getContext(), "LoadMore " + numberOfPages, Toast.LENGTH_SHORT).show();
+
+        new UnsplashApi().getPhotosList((numberOfPages + 1), perPage, "latest", new UnsplashApi.OnPhotosLoadedListener() {
             @Override
-            public void onLoaded(ArrayList<com.polado.wallpapers.Model.Photo> photos) {
+            public void onLoaded(ArrayList<Photo> photos) {
                 swipyRefreshLayout.setRefreshing(false);
 
                 progressBar.setVisibility(View.INVISIBLE);

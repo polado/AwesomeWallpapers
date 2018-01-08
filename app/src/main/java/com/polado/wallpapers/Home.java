@@ -1,5 +1,6 @@
 package com.polado.wallpapers;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.design.widget.NavigationView;
@@ -12,10 +13,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
+import com.polado.wallpapers.utils.DownloadPhotoService;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 
-// v 0.1.2
+// v 0.1.3
 
 public class Home extends AppCompatActivity {
     Snackbar snackbar;
@@ -36,11 +38,12 @@ public class Home extends AppCompatActivity {
             newFragment = NewFragment.newInstance();
             trendingFragment = TrendingFragment.newInstance();
             collectionsFragment = CollectionsFragment.newInstance();
-        } else {
+        }
+//        else {
 //            newFragment = (Fragment) savedInstanceState.get("newFragment");
 //            trendingFragment = (Fragment) savedInstanceState.get("trendingFragment");;
 //            collectionsFragment = (Fragment) savedInstanceState.get("collectionsFragment");
-        }
+//        }
 
 //        toolbar = (Toolbar) findViewById(R.id.toolbar);
 //
@@ -104,6 +107,15 @@ public class Home extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void startService(String msg, int id, boolean action) {
+        Intent intent = new Intent(this, DownloadPhotoService.class);
+        intent.putExtra("MSG", msg);
+        intent.putExtra("ID", id);
+        intent.putExtra("ACTION", action);
+
+        this.startService(intent);
     }
 
     protected void showNewFragment() {

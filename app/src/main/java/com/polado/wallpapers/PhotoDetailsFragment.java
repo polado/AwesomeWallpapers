@@ -3,7 +3,6 @@ package com.polado.wallpapers;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -36,7 +35,6 @@ import com.polado.wallpapers.Model.DownloadLink;
 import com.polado.wallpapers.Model.Photo;
 import com.polado.wallpapers.Model.PhotoStats;
 import com.polado.wallpapers.rest.UnsplashApi;
-import com.polado.wallpapers.utils.DownloadPhotoService;
 import com.polado.wallpapers.utils.DownloadingNotification;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -131,12 +129,14 @@ public class PhotoDetailsFragment extends Fragment {
     }
 
     private void startService(String msg, int id, boolean action) {
-        Intent intent = new Intent(getContext(), DownloadPhotoService.class);
-        intent.putExtra("MSG", msg);
-        intent.putExtra("ID", id);
-        intent.putExtra("ACTION", action);
+//        Intent intent = new Intent(getActivity(), DownloadPhotoService.class);
+//        intent.putExtra("MSG", msg);
+//        intent.putExtra("ID", id);
+//        intent.putExtra("ACTION", action);
+//
+//        getActivity().startService(intent);
 
-        getContext().startService(intent);
+        ((Home) getActivity()).startService(msg, id, action);
     }
 
     @Override

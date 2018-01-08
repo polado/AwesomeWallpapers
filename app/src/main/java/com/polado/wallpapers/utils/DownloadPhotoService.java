@@ -79,7 +79,7 @@ public class DownloadPhotoService extends Service {
         assert mNotificationManager != null;
         mNotificationManager.notify(id, mBuilder.build());
 
-        stopSelf();
+//        stopSelf();
     }
 
     @Override
