@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tabs>
     <tab
-        barColorWhenSelected="@color/colorNew"
+        barColorWhenSelected="@color/colorLightAccent"
         icon="@drawable/ic_bottomnav_new"
         id="@+id/tab_new"
-        inActiveColor="@color/colorDark"
+        activeColor="@color/colorNew"
+        inActiveColor="@color/colorAccent"
         title="New" />
     <tab
-        barColorWhenSelected="@color/colorTrending"
+        barColorWhenSelected="@color/colorLightAccent"
         icon="@drawable/ic_bottomnav_trending"
         id="@+id/tab_trending"
-        inActiveColor="@color/colorDark"
+        activeColor="@color/colorTrending"
+        inActiveColor="@color/colorAccent"
         title="Trending" />
     <tab
-        barColorWhenSelected="@color/colorCollection"
+        barColorWhenSelected="@color/colorLightAccent"
         icon="@drawable/ic_bottomnav_collection"
         id="@+id/tab_collection"
-        inActiveColor="@color/colorDark"
+        activeColor="@color/colorCollection"
+        inActiveColor="@color/colorAccent"
         title="Collection" />
 </tabs>

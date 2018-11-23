@@ -61,7 +61,9 @@ public class CollectionsAdapter extends RecyclerView.Adapter<CollectionsAdapter.
         gradientDrawable.setShape(GradientDrawable.RECTANGLE);
         gradientDrawable.setColor(Color.parseColor(collection.getCoverPhoto().getColor()));
 
-        Picasso.with(context).load(collection.getCoverPhoto().getUrls().getRegular()).placeholder(gradientDrawable).into(holder.imageView);
+        holder.landscape.setColorFilter(Color.parseColor(collection.getCoverPhoto().getColor()));
+
+        Picasso.with(context).load(collection.getCoverPhoto().getUrls().getSmall()).placeholder(gradientDrawable).into(holder.imageView);
         Picasso.with(context).load(collection.getUser().getProfileImage().getMedium())
                 .transform(new CropCircleTransformation()).into(holder.creatorProfileImage);
 
@@ -76,7 +78,7 @@ public class CollectionsAdapter extends RecyclerView.Adapter<CollectionsAdapter.
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        ImageView imageView, creatorProfileImage;
+        ImageView imageView, creatorProfileImage, landscape;
         TextView numOfPics, creator, title;
         CardView cardView;
 
@@ -84,6 +86,7 @@ public class CollectionsAdapter extends RecyclerView.Adapter<CollectionsAdapter.
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.collection_home_iv);
             creatorProfileImage = (ImageView) itemView.findViewById(R.id.collection_home_creator_iv);
+            landscape = (ImageView) itemView.findViewById(R.id.image_landscape);
             numOfPics = (TextView) itemView.findViewById(R.id.collection_number_of_pics);
             creator = (TextView) itemView.findViewById(R.id.collection_home_creator_tv);
             title = (TextView) itemView.findViewById(R.id.collection_home_title_tv);

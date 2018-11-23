@@ -4,9 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="5dp"
+    style="?attr/cardStyle"
     android:layout_marginEnd="5dp"
     android:layout_marginStart="5dp"
-    app:cardCornerRadius="5dp">
+    app:cardCornerRadius="16dp">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -29,7 +30,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                android:maxHeight="100dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/i02"
                 android:transitionName="@string/fragment_photo_trans" />
@@ -42,6 +42,7 @@
                 android:background="@drawable/shape_chip">
 
                 <ImageView
+                    android:id="@+id/image_like"
                     android:layout_width="@dimen/ic_xs"
                     android:layout_height="@dimen/ic_xs"
                     android:src="@drawable/ic_like_red_24dp" />
@@ -63,7 +64,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:background="@color/cardview_light_background"
             android:padding="4dp">
 
             <LinearLayout

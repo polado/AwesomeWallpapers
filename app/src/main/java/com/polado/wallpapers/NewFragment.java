@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.baoyz.widget.PullRefreshLayout;
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 import com.polado.wallpapers.Model.Photo;
@@ -38,6 +39,9 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
     ImageView errorMsg;
     ProgressBar progressBar;
     SwipyRefreshLayout swipyRefreshLayout;
+
+    PullRefreshLayout pullRefreshLayout;
+
     ArrayList<Photo> photosList = null, adapterPhotosList = null;
     int numberOfPages = 0, perPage = 10;
 
@@ -173,33 +177,33 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
 
         Toast.makeText(getContext(), "Refresh", Toast.LENGTH_SHORT).show();
 
-        new UnsplashApi().getPhotosList(1, perPage, "latest", new UnsplashApi.OnPhotosLoadedListener() {
-            @Override
-            public void onLoaded(ArrayList<Photo> photos) {
-                swipyRefreshLayout.setRefreshing(false);
-
-                progressBar.setVisibility(View.INVISIBLE);
-                errorMsg.setVisibility(View.INVISIBLE);
-
-                photosList = photos;
-                photosAdapter = new PhotosAdapter(getContext(), photosList, onItemClickListener);
-
-                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
-                recyclerView.setLayoutManager(mLayoutManager);
-                recyclerView.setAdapter(photosAdapter);
-
-                numberOfPages++;
-            }
-
-            @Override
-            public void onFailure(String error) {
-                swipyRefreshLayout.setRefreshing(false);
-
-                progressBar.setVisibility(View.INVISIBLE);
-                Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
-                Log.v("Error", error);
-            }
-        });
+//        new UnsplashApi().getPhotosList(1, perPage, "latest", new UnsplashApi.OnPhotosLoadedListener() {
+//            @Override
+//            public void onLoaded(ArrayList<Photo> photos) {
+//                swipyRefreshLayout.setRefreshing(false);
+//
+//                progressBar.setVisibility(View.INVISIBLE);
+//                errorMsg.setVisibility(View.INVISIBLE);
+//
+//                photosList = photos;
+//                photosAdapter = new PhotosAdapter(getContext(), photosList, onItemClickListener);
+//
+//                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+//                recyclerView.setLayoutManager(mLayoutManager);
+//                recyclerView.setAdapter(photosAdapter);
+//
+//                numberOfPages++;
+//            }
+//
+//            @Override
+//            public void onFailure(String error) {
+//                swipyRefreshLayout.setRefreshing(false);
+//
+//                progressBar.setVisibility(View.INVISIBLE);
+//                Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+//                Log.v("Error", error);
+//            }
+//        });
     }
 
 //    void refresh() {
@@ -252,34 +256,34 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
     void loadMore() {
         Toast.makeText(getContext(), "LoadMore " + numberOfPages, Toast.LENGTH_SHORT).show();
 
-        new UnsplashApi().getPhotosList((numberOfPages + 1), perPage, "latest", new UnsplashApi.OnPhotosLoadedListener() {
-            @Override
-            public void onLoaded(ArrayList<Photo> photos) {
-                swipyRefreshLayout.setRefreshing(false);
-
-                progressBar.setVisibility(View.INVISIBLE);
-                errorMsg.setVisibility(View.INVISIBLE);
-
-                photosList.addAll(photos);
-
-                Log.d("loadmore", photos.size() + " " + photosList.size());
-
-                photosAdapter.notifyDataSetChanged();
-
-                recyclerView.smoothScrollToPosition(numberOfPages * perPage);
-
-                numberOfPages++;
-            }
-
-            @Override
-            public void onFailure(String error) {
-                swipyRefreshLayout.setRefreshing(false);
-
-                progressBar.setVisibility(View.INVISIBLE);
-                Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
-                Log.v("Error", error);
-            }
-        });
+//        new UnsplashApi().getPhotosList((numberOfPages + 1), perPage, "latest", new UnsplashApi.OnPhotosLoadedListener() {
+//            @Override
+//            public void onLoaded(ArrayList<Photo> photos) {
+//                swipyRefreshLayout.setRefreshing(false);
+//
+//                progressBar.setVisibility(View.INVISIBLE);
+//                errorMsg.setVisibility(View.INVISIBLE);
+//
+//                photosList.addAll(photos);
+//
+//                Log.d("loadmore", photos.size() + " " + photosList.size());
+//
+//                photosAdapter.notifyDataSetChanged();
+//
+//                recyclerView.smoothScrollToPosition(numberOfPages * perPage);
+//
+//                numberOfPages++;
+//            }
+//
+//            @Override
+//            public void onFailure(String error) {
+//                swipyRefreshLayout.setRefreshing(false);
+//
+//                progressBar.setVisibility(View.INVISIBLE);
+//                Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+//                Log.v("Error", error);
+//            }
+//        });
     }
 
     @Override
@@ -361,6 +365,7 @@ public class NewFragment extends Fragment implements AdapterView.OnItemClickList
             }
         });
 
+//        toolbarCV.setCardBackgroundColor(getContext().getResources().getColor(R.color.colorNewLight));
         searchBarCV.setCardBackgroundColor(getContext().getResources().getColor(R.color.colorNewLight));
     }
 

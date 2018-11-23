@@ -19,6 +19,14 @@
     <!--android:layout_height="@dimen/bar_height" />-->
 
 
+    <!--<android.support.v7.widget.CardView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--app:cardElevation="8dp"-->
+    <!--app:cardCornerRadius="16dp"-->
+    <!--android:layout_margin="5dp"-->
+    <!--android:layout_gravity="bottom">-->
+
     <com.roughike.bottombar.BottomBar
         android:id="@+id/bottomBar"
         android:layout_width="match_parent"
@@ -26,4 +34,7 @@
         android:layout_gravity="bottom"
         app:bb_showShadow="true"
         app:bb_tabXmlResource="@xml/bottombar_tabs" />
+
+    <!--</android.support.v7.widget.CardView>-->
+
 </android.support.design.widget.CoordinatorLayout>

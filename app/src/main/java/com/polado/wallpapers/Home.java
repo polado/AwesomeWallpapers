@@ -6,10 +6,10 @@ import android.support.annotation.IdRes;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
@@ -19,7 +19,7 @@ import com.roughike.bottombar.OnTabSelectListener;
 
 // v 0.1.3
 
-public class Home extends AppCompatActivity {
+public class Home extends FragmentActivity {
     Snackbar snackbar;
     //    public CardView toolbarCV, searchBarCV;
 //    private Toolbar toolbar;
@@ -88,9 +88,10 @@ public class Home extends AppCompatActivity {
         fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
             public void onBackStackChanged() {
-                Fragment photoDetails = fragmentManager.findFragmentByTag("PhotoDetails");
 
+                Fragment photoDetails = fragmentManager.findFragmentByTag("PhotoDetails");
                 Fragment collectionDetails = fragmentManager.findFragmentByTag("CollectionDetails");
+                Fragment userDetailsFragment = fragmentManager.findFragmentByTag("UserDetails");
 
                 if (photoDetails != null && photoDetails.isVisible()) {
                     Log.i("HomeFragmentChange", "photoDetails");
@@ -99,6 +100,8 @@ public class Home extends AppCompatActivity {
                 } else if (collectionDetails != null && collectionDetails.isVisible()) {
                     Log.i("HomeFragmentChange", "collectionDetails");
 //                    toolbar.setVisibility(View.INVISIBLE);
+                    bottomBar.setVisibility(View.INVISIBLE);
+                } else if (userDetailsFragment != null && userDetailsFragment.isVisible()) {
                     bottomBar.setVisibility(View.INVISIBLE);
                 } else {
                     Log.i("HomeFragmentChange", "not photoDetails or collectionDetails");

@@ -83,7 +83,9 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
         gradientDrawable.setShape(GradientDrawable.RECTANGLE);
         gradientDrawable.setColor(Color.parseColor(photo.getColor()));
 
-        Picasso.with(context).load(photo.getUrls().getRegular()).placeholder(gradientDrawable).into(holder.imageView);
+        holder.like.setColorFilter(Color.parseColor(photo.getColor()));
+
+        Picasso.with(context).load(photo.getUrls().getSmall()).placeholder(gradientDrawable).into(holder.imageView);
         Picasso.with(context).load(photo.getUser().getProfileImage().getMedium())
                 .transform(new CropCircleTransformation()).into(holder.creatorProfileImage);
 
@@ -133,7 +135,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        ImageView imageView, creatorProfileImage;
+        ImageView imageView, creatorProfileImage, like;
         ImageButton likeBtn;
         TextView numOfLikes, creator;
 
@@ -144,6 +146,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
             numOfLikes = (TextView) itemView.findViewById(R.id.image_number_of_favs);
             creator = (TextView) itemView.findViewById(R.id.image_home_creator_tv);
             creatorProfileImage = (ImageView) itemView.findViewById(R.id.image_home_creator_iv);
+            like = (ImageView) itemView.findViewById(R.id.image_like);
 
             imageView.setOnClickListener(this);
         }

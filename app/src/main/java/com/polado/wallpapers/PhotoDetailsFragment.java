@@ -1,8 +1,10 @@
 package com.polado.wallpapers;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -17,6 +19,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -100,7 +103,7 @@ public class PhotoDetailsFragment extends Fragment {
 
                     startService(photoFile, imageID, false);
 //                    notification.updateNotification(photoFile, imageID);
-                    ((Home) getActivity()).snackbar.setText("Downloaded").show();
+                    ((Home) activity).snackbar.setText("Downloaded").show();
 //                    snackbar.setText("Downloaded").show();
 
                 }
@@ -136,7 +139,15 @@ public class PhotoDetailsFragment extends Fragment {
 //
 //        getActivity().startService(intent);
 
-        ((Home) getActivity()).startService(msg, id, action);
+        ((Home) activity).startService(msg, id, action);
+    }
+
+    Activity activity;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        activity = getActivity();
     }
 
     @Override
@@ -178,6 +189,13 @@ public class PhotoDetailsFragment extends Fragment {
         imageView = (ImageView) view.findViewById(R.id.image_details_iv);
         imageView.setTransitionName(transitionName);
         creatorProfileImage = (ImageView) view.findViewById(R.id.details_creator_profile_iv);
+
+        creatorProfileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                makeTransitionUser((ImageView) view);
+            }
+        });
 
         GradientDrawable gradientDrawable = new GradientDrawable();
         gradientDrawable.setShape(GradientDrawable.RECTANGLE);
@@ -499,5 +517,36 @@ public class PhotoDetailsFragment extends Fragment {
                 Log.i("liked", "error " + error);
             }
         });
+    }
+
+    public void makeTransitionUser(ImageView view) {
+        UserDetailsFragment detailsFragment = new UserDetailsFragment();
+
+        setSharedElementReturnTransition(TransitionInflater.from(
+                getActivity()).inflateTransition(R.transition.change_image_trans));
+        setExitTransition(TransitionInflater.from(
+                getActivity()).inflateTransition(android.R.transition.fade));
+
+        detailsFragment.setSharedElementEnterTransition(TransitionInflater.from(
+                getActivity()).inflateTransition(R.transition.change_image_trans));
+        detailsFragment.setEnterTransition(TransitionInflater.from(
+                getActivity()).inflateTransition(android.R.transition.fade));
+
+        String imageTransitionName = view.getTransitionName();
+
+        Bundle bundle = new Bundle();
+        bundle.putString("USER_TRANS_NAME", imageTransitionName);
+        bundle.putParcelable("USER", photo.getUser());
+
+        detailsFragment.setArguments(bundle);
+
+        FragmentManager fragmentManager = getFragmentManager();
+
+        fragmentManager.beginTransaction()
+                .addSharedElement(view, imageTransitionName)
+                .hide(this)
+                .addToBackStack("user")
+                .replace(R.id.contentContainer, detailsFragment, "UserDetails")
+                .commit();
     }
 }

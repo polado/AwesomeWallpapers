@@ -8,15 +8,34 @@
     <color name="colorChip">#66000000</color>
 
     <color name="colorPrimaryDark1">#303F9F</color>
+    <color name="colorAccentDark">#424242</color>
+
+    <color name="colorLightPrimary">#FFFFFF</color>
+    <color name="colorLightPrimaryDark">#FFFFFF</color>
+    <!--<color name="colorLightPrimary">#F5F5F5</color>-->
+    <!--<color name="colorLightPrimaryDark">#D0D0D0</color>-->
     <color name="colorAccent">#424242</color>
+    <color name="colorLightAccent">#F1F3F4</color>
+    <color name="colorLightWindowBackground">#FAFAFA</color>
 
-    <color name="colorNew">#c2185b</color>
+    <color name="colorDarkPrimary">#212121</color>
+    <color name="colorDarkPrimaryDark">#000000</color>
+    <color name="colorDarkAccent">#FFFFFF</color>
+    <color name="colorDarkWindowBackground">#303030</color>
+
+    <!--D0D0D0-->
+
+    <!--<color name="colorNew">#F1F3F4</color>-->
+    <color name="colorNew">#2196f3</color>
     <color name="colorTrending">#f57c00</color>
-    <color name="colorCollection">#00796b</color>
+    <color name="colorCollection">#4caf50</color>
 
-    <color name="colorNewLight">#fa5788</color>
-    <color name="colorTrendingLight">#ffad42</color>
-    <color name="colorCollectionLight">#48a999</color>
+    <color name="colorNewLight">#F1F3F4</color>
+    <color name="colorTrendingLight">#F1F3F4</color>
+    <color name="colorCollectionLight">#F1F3F4</color>
+    <!--<color name="colorNewLight">#6ec6ff</color>-->
+    <!--<color name="colorTrendingLight">#ffad42</color>-->
+    <!--<color name="colorCollectionLight">#80e27e</color>-->
 
     <!--Old Stuff-->
     <!--<color name="colorNew">#c2185b</color>-->

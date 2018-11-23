@@ -1,12 +1,8 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:textColor">@color/cardview_dark_background</item>
         <item name="actionBarStyle">@style/CustomActionBar</item>
         <item name="android:actionBarStyle">@style/CustomActionBar</item>
     </style>
@@ -22,4 +18,62 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
 
+    <attr format="reference" name="appBarStyle" />
+    <attr format="reference" name="cardStyle" />
+    <attr format="reference" name="imageButtonStyle" />
+    <attr format="reference" name="navViewStyle" />
+
+    <style name="LightTheme" parent="AppTheme">
+        <item name="colorPrimary">@color/colorLightPrimary</item>
+        <item name="colorPrimaryDark">@color/colorLightPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textColorHint">@color/colorAccent</item>
+
+        <item name="android:windowBackground">@color/colorLightWindowBackground</item>
+
+        <item name="appBarStyle">@style/LightAppbar</item>
+        <item name="cardStyle">@style/CardView.Light</item>
+        <item name="imageButtonStyle">@color/colorAccent</item>
+        <item name="navViewStyle">@color/colorLightPrimary</item>
+    </style>
+
+    <style name="DarkTheme" parent="AppTheme">
+        <item name="colorPrimary">@color/colorDarkPrimary</item>
+        <item name="colorPrimaryDark">@color/colorDarkPrimaryDark</item>
+        <item name="colorAccent">@color/colorDarkAccent</item>
+
+        <item name="android:textColor">@color/colorDarkAccent</item>
+        <item name="android:textColorHint">@color/colorDarkAccent</item>
+
+        <item name="android:windowBackground">@color/colorDarkWindowBackground</item>
+
+        <item name="appBarStyle">@style/DarkAppbar</item>
+        <item name="cardStyle">@style/CardView.Dark</item>
+        <item name="imageButtonStyle">@color/colorDarkAccent</item>
+        <item name="navViewStyle">@color/colorDarkPrimary</item>
+    </style>
+
+    <style name="LightAppbar" parent="CardView">
+        <item name="cardBackgroundColor">@color/colorLightPrimary</item>
+    </style>
+
+    <style name="DarkAppbar" parent="CardView">
+        <item name="cardBackgroundColor">@color/colorDarkPrimary</item>
+    </style>
+
+    <style name="LightNavView" parent="Widget.Design.NavigationView">
+        <item name="background">@color/colorLightPrimary</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="imageButtonStyle">@color/colorAccent</item>
+    </style>
+
+    <style name="DarkNavView" parent="Widget.Design.NavigationView">
+        <item name="background">@color/colorDarkPrimary</item>
+        <item name="android:textColor">@color/colorDarkAccent</item>
+        <item name="imageButtonStyle">@color/colorDarkAccent</item>
+    </style>
 </resources>
