@@ -35,6 +35,10 @@
         app:bb_showShadow="true"
         app:bb_tabXmlResource="@xml/bottombar_tabs" />
 
+    <include
+        layout="@layout/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bar_height" />
     <!--</android.support.v7.widget.CardView>-->
 
 </android.support.design.widget.CoordinatorLayout>
