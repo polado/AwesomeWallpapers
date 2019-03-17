@@ -34,7 +34,6 @@
         android:layout_gravity="bottom"
         app:bb_showShadow="true"
         app:bb_tabXmlResource="@xml/bottombar_tabs" />
-
     <include
         layout="@layout/app_bar_layout"
         android:layout_width="match_parent"
